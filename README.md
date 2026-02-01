@@ -7,21 +7,27 @@ Sebuah aplikasi manajemen link (Linktree clone) modern yang dibangun dengan **Ne
 ---
 
 ## ✨ Fitur Utama
+- **♾️ Unlimited Links**: Upload dan kelola produk sebanyak yang kamu mau tanpa batasan.
+- **🎨 10+ Premium Themes**: Pilih dari belasan tema lucu, cantik, dan elegan yang siap pakai.
+- **📈 Real-time Analytics**: Pantau berapa banyak orang yang melihat profil kamu secara langsung.
+- **🏆 Product Tracking**: Ketahui produk mana yang paling populer dan paling banyak diklik.
+- **⚙️ Super Easy Customization**: Edit profil, ganti foto, dan atur link dengan sekali klik.
+- **� Secure Authentication**: Sistem login terautentikasi (JWT) untuk melindungi data kamu.
+- **⚡ Blazing Fast Speed**: Performa super ringan berbasis Next.js 15, katalog terbuka dalam sekejap.
+- **📱 Mobile Optimized**: Desain responsif yang dirancang khusus untuk pengguna smartphone.
+- **�💸 100% Free Forever**: Semua fitur premium ini bisa kamu nikmati secara GRATIS selamanya.
+
+## 🚀 Fitur Visual (Landing Page)
 - **Typewriter Hero Title**: Judul dinamis yang berganti secara otomatis (Link, Catalogue, Website, etc).
-- **Premium Aesthetics**: Efek aurora background, glassmorphism, dan animasi "alive" tingkat SaaS dunia.
-- **Scroll Reveal**: Elemen muncul secara halus (slide-up) saat di-scroll, memberikan kesan premium.
-- **Brand Slogan Badge**: Highlight "Free Forever" dengan gaya modern yang eye-catching.
-- **Dynamic Phone Mockup**: Simulasi tampilan profil di HP secara real-time di halaman utama.
-- **Dashboard Admin**: Kelola semua link kamu (Shopee, TikTok, dll) dalam satu tempat.
-- **Smart Category Management**: Pengelompokan link otomatis dengan pencarian/filtering super cepat.
-- **Security First**: Proteksi SQL Injection (via Prisma) dan limitasi input (Bio 80 char).
-- **Auto-Standardization**: Otomatis merapikan format URL dan penulisan kategori.
+- **Premium Aesthetics**: Efek aurora background, glassmorphism, dan animasi "alive" tingkat dunia.
+- **Scroll Reveal**: Elemen muncul secara halus saat di-scroll.
+- **Dynamic Phone Mockup**: Simulasi tampilan profil asli di halaman utama.
 
 ## 📱 Best Practice for Customization
 Untuk menjaga estetika premium aplikasi ini:
 1. **Bio**: Tetaplah singkat (max 80 karakter) agar desain tidak berantakan.
-2. **Hero Preview**: Masukkan screenshot profil kamu ke `public/hero-preview.png` untuk hasil yang paling realistis di landing page.
-3. **Themes**: Gunakan warna-warna harmoni yang sudah tersedia di `themes.js` untuk konsistensi visual.
+2. **Hero Preview**: Masukkan screenshot profil kamu ke `public/hero-preview.png`.
+3. **Themes**: Gunakan warna-warna harmoni yang sudah tersedia di `themes.js`.
 
 ## 🚀 Persiapan Cepat
 1. Clone repository ini.
