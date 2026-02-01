@@ -1,0 +1,77 @@
+import prisma from "@/lib/prisma";
+import { NextResponse } from "next/server";
+
+export async function GET(request) {
+    const userId = request.headers.get("x-user-id");
+
+    if (!userId) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    try {
+        const user = await prisma.user.findUnique({
+            where: { id: parseInt(userId) },
+            select: {
+                bio: true,
+                instagram: true,
+                youtube: true,
+                spotify: true,
+                tiktok: true,
+                email: true,
+            }
+        });
+
+        if (!user) {
+            return NextResponse.json({
+                bio: "",
+                instagram: "",
+                youtube: "",
+                spotify: "",
+                tiktok: "",
+                email: ""
+            });
+        }
+
+        return NextResponse.json(user);
+    } catch (error) {
+        console.error("Profile Fetch Error:", error);
+        return NextResponse.json({
+            error: "Failed to fetch profile",
+            message: error.message,
+            tip: "Restart your dev server and run 'npx prisma generate' if you see 'Unknown field'."
+        }, { status: 500 });
+    }
+}
+
+export async function PUT(request) {
+    const userId = request.headers.get("x-user-id");
+
+    if (!userId) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    try {
+        const body = await request.json().catch(() => ({}));
+        const { bio, instagram, youtube, spotify, tiktok, email } = body;
+
+        await prisma.user.update({
+            where: { id: parseInt(userId) },
+            data: {
+                bio: bio || null,
+                instagram: instagram || null,
+                youtube: youtube || null,
+                spotify: spotify || null,
+                tiktok: tiktok || null,
+                email: email || null,
+            },
+        });
+
+        return NextResponse.json({ success: true });
+    } catch (error) {
+        console.error("Profile Update Error:", error);
+        return NextResponse.json({
+            error: "Failed to update profile",
+            message: error.message
+        }, { status: 500 });
+    }
+}
