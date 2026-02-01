@@ -3,7 +3,7 @@
 Sebuah aplikasi manajemen link (Linktree clone) modern yang dibangun dengan **Next.js 15**, **Tailwind CSS**, dan **Prisma**. Aplikasi ini dirancang untuk kemudahan manajemen link dengan estetika premium dan fitur kategori yang cerdas.
 
 ---
-**Developed by: [Nafi Ilham](https://github.com/nafiilham0)** 🦾🚀
+**Developed by: [Nafi Ilham](https://github.com/nafiilham008)** 🦾🚀
 ---
 
 ## ✨ Fitur Utama
