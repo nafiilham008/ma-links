@@ -22,17 +22,14 @@ export default async function UserProfile(props) {
         return notFound();
     }
 
-    return (
-        <main className="min-h-screen w-full bg-mesh-gradient flex flex-col items-center py-12 px-4 sm:px-6">
-            <ProfileClient user={user} />
+    // Increment views if accessed (simple view counting)
+    // We could exclude owner views here if we had the context, but simpler to just count or ignore
+    await prisma.user.update({
+        where: { id: user.id },
+        data: { views: { increment: 1 } },
+    });
 
-            {/* Footer */}
-            <div className="mt-16 text-center">
-                <p className="text-slate-500/60 text-sm font-medium tracking-wide">
-                    Powered by <span className="text-slate-700 font-bold">Linktree Clone</span>
-                </p>
-                <a href="/login" className="text-slate-400 text-xs hover:text-slate-600 animate-pulse mt-2 block">Create your own</a>
-            </div>
-        </main>
+    return (
+        <ProfileClient user={user} />
     );
 }

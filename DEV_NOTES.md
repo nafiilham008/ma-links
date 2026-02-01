@@ -1,6 +1,6 @@
-# 🛠️ Developer Notes & Guide
+# 🛠️ ma-links Developer Notes & Guide
 
-Dokumentasi teknis untuk pengembangan dan pemeliharaan aplikasi Linktree Clone.
+Dokumentasi teknis untuk pengembangan dan pemeliharaan aplikasi **ma-links**.
 
 ## 1. Cara Menjalankan Aplikasi (Dari Awal)
 Jika kamu baru saja meng-clone project ini, ikuti langkah berikut:
@@ -56,11 +56,40 @@ git status
 git add .
 
 # 3. Beri catatan perubahan (Commit)
-git commit -m "Update fitur atau perbaikan bug"
+git commit -m "feat: premium landing page overhaul and theme polishing"
 
 # 4. Kirim ke GitHub
-git push origin main
+# Gunakan branch 'master' atau 'main' sesuai yang tertera di repository
+git push origin master
+# Jika error branch mismatch, coba: git push origin main
 ```
 
+## 6. Pandora Box: Panduan Kustomisasi Tema 🎨
+Sistem tema di ma-links dirancang secara modular. Berikut adalah file-file yang saling berkaitan jika kamu ingin mengubah atau menambah tema baru:
+
+### 📂 File 1: `src/lib/themes.js` (Pusat Data Tema)
+Ini adalah "otak" dari semua pilihan tema.
+- **Apa yang disetting?**: Warna background (`bg`), warna kartu (`cardBg`), warna border (`cardBorder`), warna teks (`text`), dan ikon tema (`icon`).
+- **Cara Tambah**: Tambahkan objek baru ke dalam variable `themePresets`. Pastikan class CSS-nya tersedia di Tailwind.
+
+### 📂 File 2: `src/components/AmbientBackground.js` (Efek Animasi)
+Ini mengatur "benda melayang" (emoji/partikel) sesuai tema.
+- **Apa yang disetting?**: List emoji yang muncul untuk setiap tema (`themeEmojis`).
+- **Cara Tambah**: Tambahkan key tema baru ke dalam `themeEmojis` dan masukkan array emoji yang sesuai (misal: Lemon untuk tema Lemon Sorbet).
+
+### 📂 File 3: `src/components/ProfileClient.js` (Rendering Frontend)
+Halaman profil yang dilihat oleh pengunjung/user.
+- **Relasi**: File ini mengambil data dari `themes.js` dan mengirimkan `themeName` ke `AmbientBackground.js`.
+- **Kustomisasi**: Jika ingin mengubah layout profil secara keseluruhan.
+
+### 📂 File 4: `src/app/globals.css` (Animasi & Glow)
+Tempat semua animasi "berat" berada.
+- **Isi Penting**: Keyframes untuk `.animate-orb` (glow orbs di landing page), `.animate-shimmer` (tombol berkilau), dan `.reveal-up` (efek scroll).
+
+## 7. Troubleshooting Umum
+- **Error: Unknown field**: Jalankan `npx prisma generate` lalu restart server.
+- **Database Locked**: Matikan terminal yang menjalankan `npm run dev`, jalankan command prisma, lalu nyalakan lagi.
+- **UI Gak Berubah**: Pastikan Tailwind JIT sedang jalan (server dev aktif) dan cek apakah class yang kamu pakai sudah benar penulisan/tipenya di `globals.css` atau `themes.js`.
+
 ---
-**Tips**: Selalu cek terminal saat server jalan. Jika ada error merah, baca pesan errornya, biasanya Prisma akan memberikan saran solusi yang tepat.
+**ma-links** | Developed with Love by Nafi Ilham

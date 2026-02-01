@@ -3,7 +3,18 @@
 import { useState } from "react";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
 
-export default function LinkCard({ link }) {
+import { buttonStyles } from "@/lib/themes";
+
+const formatUrl = (url) => {
+    if (!url) return "";
+    let formatted = url.trim();
+    if (!/^https?:\/\//i.test(formatted)) {
+        formatted = `https://${formatted}`;
+    }
+    return formatted;
+};
+
+export default function LinkCard({ link, theme, buttonStyle }) {
     const [showLightbox, setShowLightbox] = useState(false);
 
     const handleClick = async () => {
@@ -20,21 +31,21 @@ export default function LinkCard({ link }) {
     return (
         <>
             <a
-                href={link.url}
+                href={formatUrl(link.url)}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={handleClick}
                 className="block w-full group relative mb-4"
             >
                 {/* Modern Wide Card Background */}
-                <div className="absolute inset-0 bg-white/40 backdrop-blur-xl rounded-[2rem] transform transition-all duration-500 group-hover:bg-white/60 group-hover:scale-[1.01] group-hover:shadow-[0_20px_40px_rgba(0,0,0,0.05)] border border-white/60 group-hover:border-white"></div>
+                <div className={`absolute inset-0 ${theme.cardBg} backdrop-blur-xl ${buttonStyles[buttonStyle] || "rounded-[2rem]"} transform transition-all duration-500 group-hover:scale-[1.01] group-hover:shadow-[0_20px_40px_rgba(0,0,0,0.05)] border ${theme.cardBorder} group-hover:border-white`}></div>
 
                 {/* Content */}
                 <div className="relative p-3 flex items-center gap-4">
 
                     {/* Thumbnail Container */}
                     <div
-                        className="w-16 h-16 flex-shrink-0 rounded-[1.5rem] overflow-hidden border border-white/40 bg-white/20 relative z-20 group/image shadow-sm"
+                        className={`w-16 h-16 flex-shrink-0 ${buttonStyles[buttonStyle] === "rounded-full" ? "rounded-full" : "rounded-lg"} overflow-hidden border ${theme.cardBorder} bg-white/20 relative z-20 group/image shadow-sm`}
                         onClick={(e) => {
                             if (link.image) {
                                 e.preventDefault();
@@ -61,7 +72,7 @@ export default function LinkCard({ link }) {
                     {/* Text Section */}
                     <div className="flex-grow text-left min-w-0 pr-4">
                         <div className="flex flex-col">
-                            <h2 className="text-slate-800 font-bold text-lg truncate tracking-tight group-hover:text-indigo-600 transition-colors">
+                            <h2 className={`${theme.text} font-bold text-lg truncate tracking-tight group-hover:${theme.accent.replace("text-", "text-")} transition-colors`}>
                                 {link.title}
                             </h2>
                             {link.platform && (
@@ -73,7 +84,7 @@ export default function LinkCard({ link }) {
                     </div>
 
                     {/* Action Arrow */}
-                    <div className="flex-shrink-0 pr-4 text-slate-300 group-hover:text-indigo-500 group-hover:translate-x-1 transition-all">
+                    <div className={`flex-shrink-0 pr-4 ${theme.text} opacity-60 group-hover:opacity-100 group-hover:translate-x-1 transition-all`}>
                         <ArrowTopRightOnSquareIcon className="w-5 h-5" />
                     </div>
                 </div>

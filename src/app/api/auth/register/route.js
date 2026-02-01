@@ -1,40 +1,57 @@
-import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
+import { sendEmail } from "@/lib/email";
+import { emailTemplates } from "@/lib/email-templates";
+
+function generateOTP() {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+}
 
 export async function POST(request) {
     try {
-        const body = await request.json();
-        const { username, password } = body;
+        const { username, email, password, name } = await request.json();
 
-        if (!username || !password) {
-            return NextResponse.json({ error: "Missing fields" }, { status: 400 });
-        }
-
-        const existingUser = await prisma.user.findUnique({
-            where: { username },
+        // Check availability
+        const existing = await prisma.user.findFirst({
+            where: {
+                OR: [{ username }, { email }]
+            }
         });
 
-        if (existingUser) {
-            return NextResponse.json({ error: "Username taken" }, { status: 400 });
+        if (existing) {
+            return NextResponse.json({ error: "Username or Email already taken" }, { status: 400 });
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        // const hashedPassword = password; // TEMPORARY DEBUG
+        const otp = generateOTP();
+        const otpExpiry = new Date(Date.now() + 15 * 60 * 1000); // 15 mins
 
-        const user = await prisma.user.create({
+        // Create unverified user
+        await prisma.user.create({
             data: {
                 username,
+                email,
+                name,
                 password: hashedPassword,
-            },
+                verificationCode: otp,
+                verificationExpiry: otpExpiry,
+                provider: "credentials",
+                emailVerified: null // Explicitly null
+            }
         });
 
-        // Remove password from response
-        const { password: _, ...userWithoutPassword } = user;
+        // Send Email
+        await sendEmail({
+            to: email,
+            subject: "Verify your email",
+            html: emailTemplates.verification(otp, name)
+        });
 
-        return NextResponse.json(userWithoutPassword);
+        return NextResponse.json({ message: "Registered. Check email for OTP." });
+
     } catch (error) {
-        console.error("REGISTER API ERROR:", error);
-        return NextResponse.json({ error: "Registration failed: " + error.message }, { status: 500 });
+        console.error("Register Error:", error);
+        return NextResponse.json({ error: "Registration failed" }, { status: 500 });
     }
 }

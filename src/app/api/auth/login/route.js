@@ -26,7 +26,13 @@ export async function POST(request) {
             .setExpirationTime("24h")
             .sign(JWT_SECRET);
 
-        const response = NextResponse.json({ success: true });
+        const response = NextResponse.json({
+            success: true,
+            user: {
+                username: user.username,
+                role: user.role
+            }
+        });
 
         // Set HTTP-only cookie
         response.cookies.set("token", token, {

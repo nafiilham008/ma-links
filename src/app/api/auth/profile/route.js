@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 export async function GET(request) {
     const userId = request.headers.get("x-user-id");
 
-    if (!userId) {
+    if (!userId || isNaN(parseInt(userId))) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -18,6 +18,15 @@ export async function GET(request) {
                 spotify: true,
                 tiktok: true,
                 email: true,
+                themePreset: true,
+                buttonStyle: true,
+                avatar: true,
+                customBackground: true,
+                enableAmbient: true,
+                name: true,
+                username: true,
+                views: true,
+                role: true,
             }
         });
 
@@ -28,7 +37,16 @@ export async function GET(request) {
                 youtube: "",
                 spotify: "",
                 tiktok: "",
-                email: ""
+                username: "guest",
+                email: "",
+                themePreset: "classic",
+                buttonStyle: "rounded",
+                avatar: null,
+                customBackground: null,
+                enableAmbient: true,
+                name: "",
+                views: 0,
+                role: "affiliate"
             });
         }
 
@@ -52,17 +70,23 @@ export async function PUT(request) {
 
     try {
         const body = await request.json().catch(() => ({}));
-        const { bio, instagram, youtube, spotify, tiktok, email } = body;
+        const { bio, instagram, youtube, spotify, tiktok, email, themePreset, buttonStyle, avatar, customBackground, enableAmbient, name } = body;
 
         await prisma.user.update({
             where: { id: parseInt(userId) },
             data: {
-                bio: bio || null,
+                bio: bio ? bio.substring(0, 80) : null,
                 instagram: instagram || null,
                 youtube: youtube || null,
                 spotify: spotify || null,
                 tiktok: tiktok || null,
                 email: email || null,
+                themePreset: themePreset || "classic",
+                buttonStyle: buttonStyle || "rounded",
+                avatar: avatar || null,
+                customBackground: customBackground || null,
+                enableAmbient: enableAmbient !== undefined ? enableAmbient : true,
+                name: name || null,
             },
         });
 
