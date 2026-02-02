@@ -55,6 +55,7 @@ export default function UserDashboard({ user }) {
     const [pendingUsername, setPendingUsername] = useState(user?.username || "");
     const [checkingUsername, setCheckingUsername] = useState(false);
     const [claimingUsername, setClaimingUsername] = useState(false);
+    const [confirmAction, setConfirmAction] = useState({ show: false, title: "", message: "", onConfirm: null, type: "danger" });
 
     const saveTimeoutRef = useRef(null);
 
@@ -251,36 +252,38 @@ export default function UserDashboard({ user }) {
             return;
         }
 
-        if (!confirm(`Yakin ingin klaim username "@${pendingUsername}"?\n\nUsername cuma bisa diganti SEKALI lho Pak!`)) {
-            return;
-        }
-
-        setClaimingUsername(true);
-        setUsernameError("");
-
-        try {
-            const res = await fetch("/api/auth/profile", {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ ...profileData, username: pendingUsername })
-            });
-
-            const data = await res.json();
-
-            if (res.ok) {
-                setProfileData(prev => ({ ...prev, username: pendingUsername, usernameChanged: true }));
-                showToast("Username berhasil diklaim! 🚀");
-                router.refresh();
-            } else {
-                setUsernameError(data.error || "Gagal klaim username");
-                showToast(data.error || "Gagal klaim username", "error");
+        setConfirmAction({
+            show: true,
+            title: "Claim Username",
+            message: `Are you sure you want to claim "@${pendingUsername}"? This is a one-time change and cannot be reversed.`,
+            type: "info",
+            onConfirm: async () => {
+                setClaimingUsername(true);
+                setUsernameError("");
+                try {
+                    const res = await fetch("/api/auth/profile", {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ ...profileData, username: pendingUsername })
+                    });
+                    const data = await res.json();
+                    if (res.ok) {
+                        setProfileData(prev => ({ ...prev, username: pendingUsername, usernameChanged: true }));
+                        showToast("Username successfully claimed! 🚀");
+                        router.refresh();
+                    } else {
+                        setUsernameError(data.error || "Failed to claim username");
+                        showToast(data.error || "Failed to claim username", "error");
+                    }
+                } catch (error) {
+                    console.error(error);
+                    showToast("Connection error", "error");
+                } finally {
+                    setClaimingUsername(false);
+                    setConfirmAction(prev => ({ ...prev, show: false }));
+                }
             }
-        } catch (error) {
-            console.error(error);
-            showToast("Kesalahan koneksi", "error");
-        } finally {
-            setClaimingUsername(false);
-        }
+        });
     }
 
     if (loading) return <div className="min-h-screen bg-slate-900 flex items-center justify-center text-white">Loading Dashboard...</div>;
@@ -431,8 +434,8 @@ export default function UserDashboard({ user }) {
                                                 <UsersIcon className="w-6 h-6" />
                                             </div>
                                             <div>
-                                                <h3 className="text-white font-bold text-sm">Klaim Username Pilihanmu!</h3>
-                                                <p className="text-indigo-300/60 text-[10px]">Login Google memberimu 1x kesempatan ganti username.</p>
+                                                <h3 className="text-white font-bold text-sm">Claim Your Unique Username!</h3>
+                                                <p className="text-indigo-300/60 text-[10px]">Google login grants you a one-time username change.</p>
                                             </div>
                                         </div>
                                         <div className="space-y-3">
@@ -448,7 +451,7 @@ export default function UserDashboard({ user }) {
                                                         setPendingUsername(val);
                                                         setUsernameError("");
                                                     }}
-                                                    placeholder="username-pilihanmu"
+                                                    placeholder="your-chosen-username"
                                                     className={`w-full bg-slate-900 border ${usernameError ? 'border-red-500' : 'border-slate-700'} rounded-xl py-3 pl-[125px] pr-4 text-white focus:outline-none focus:border-indigo-500 font-mono text-sm transition-all`}
                                                 />
                                             </div>
@@ -458,14 +461,14 @@ export default function UserDashboard({ user }) {
                                                 onClick={handleClaimUsername}
                                                 disabled={claimingUsername || !pendingUsername || pendingUsername === profileData.username}
                                                 className={`w-full py-3 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-2 ${claimingUsername || !pendingUsername || pendingUsername === profileData.username
-                                                        ? 'bg-slate-700 text-slate-500 cursor-not-allowed'
-                                                        : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-500/20 active:scale-[0.98]'
+                                                    ? 'bg-slate-700 text-slate-500 cursor-not-allowed'
+                                                    : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-500/20 active:scale-[0.98]'
                                                     }`}
                                             >
                                                 {claimingUsername ? (
                                                     <div className="w-4 h-4 border-2 border-indigo-200 border-t-transparent rounded-full animate-spin"></div>
                                                 ) : <IconBolt className="w-4 h-4" />}
-                                                {claimingUsername ? "Mengklaim..." : "Simpan & Klaim Username"}
+                                                {claimingUsername ? "Claiming..." : "Claim Username"}
                                             </button>
                                         </div>
                                     </div>
@@ -474,7 +477,7 @@ export default function UserDashboard({ user }) {
                                 {profileData.provider === 'google' && profileData.usernameChanged && (
                                     <div className="bg-slate-800/50 border border-slate-700/50 rounded-2xl p-4 mb-2 flex items-center gap-3 opacity-60 italic">
                                         <UsersIcon className="w-5 h-5 text-slate-500" />
-                                        <span className="text-slate-400 text-[10px]">Username anda: <strong>@{profileData.username}</strong> (Username sudah diganti 1x)</span>
+                                        <span className="text-slate-400 text-[10px]">Your username: <strong>@{profileData.username}</strong> (Username changed once)</span>
                                     </div>
                                 )}
 
@@ -842,9 +845,26 @@ export default function UserDashboard({ user }) {
                     </div>
                 )}
 
+                {/* Custom Confirmation Modal */}
+                {confirmAction.show && (
+                    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-[70]">
+                        <div className="bg-slate-800 rounded-2xl w-full max-w-sm border border-slate-700 shadow-2xl p-6 text-center">
+                            <div className={`w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-4 ${confirmAction.type === 'danger' ? 'bg-red-500/20 text-red-500' : 'bg-indigo-500/20 text-indigo-500'}`}>
+                                {confirmAction.type === 'danger' ? <TrashIcon className="w-8 h-8" /> : <UsersIcon className="w-8 h-8" />}
+                            </div>
+                            <h3 className="text-xl font-bold text-white mb-2">{confirmAction.title}</h3>
+                            <p className="text-slate-400 text-sm mb-8">{confirmAction.message}</p>
+                            <div className="flex gap-3">
+                                <button onClick={() => setConfirmAction({ ...confirmAction, show: false })} className="flex-1 bg-slate-700 hover:bg-slate-600 text-white py-2.5 rounded-lg font-bold transition-all">Cancel</button>
+                                <button onClick={confirmAction.onConfirm} className={`flex-1 py-2.5 rounded-lg font-bold transition-all shadow-lg ${confirmAction.type === 'danger' ? 'bg-red-600 hover:bg-red-500 shadow-red-500/20' : 'bg-indigo-600 hover:bg-indigo-500 shadow-indigo-500/20'}`}>Confirm</button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 {/* Toast Notification */}
                 {toast.show && (
-                    <div className={`fixed bottom-4 right-4 px-6 py-4 rounded-xl shadow-2xl text-white font-bold animate-slide-up z-[70] ${toast.type === "error" ? "bg-red-500" : "bg-emerald-500"}`}>
+                    <div className={`fixed bottom-4 right-4 px-6 py-4 rounded-xl shadow-2xl text-white font-bold animate-slide-up z-[80] ${toast.type === "error" ? "bg-red-500" : "bg-emerald-500"}`}>
                         {toast.message}
                     </div>
                 )}

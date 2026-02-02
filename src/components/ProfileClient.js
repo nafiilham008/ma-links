@@ -131,7 +131,7 @@ export default function ProfileClient({ user, isPreview = false }) {
                         <MagnifyingGlassIcon className={`w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 ${currentTheme.text} opacity-50 group-focus-within:opacity-100 transition-opacity`} />
                         <input
                             type="text"
-                            placeholder="Cari produk atau kategori..."
+                            placeholder="Search items or categories..."
                             value={search}
                             onChange={e => setSearch(e.target.value)}
                             className={`w-full ${currentTheme.cardBg} backdrop-blur-md border ${currentTheme.cardBorder} rounded-2xl py-3 pl-12 pr-4 ${currentTheme.text} placeholder-${currentTheme.text}/50 outline-none focus:ring-2 focus:ring-white/20 transition-all font-medium shadow-sm`}
@@ -170,7 +170,7 @@ export default function ProfileClient({ user, isPreview = false }) {
 
                     {filteredLinks.length === 0 && (
                         <div className={`text-center ${currentTheme.text} opacity-60 py-12 ${currentTheme.cardBg} backdrop-blur-sm rounded-2xl border ${currentTheme.cardBorder}`}>
-                            Produk tidak ditemukan.
+                            No items found.
                         </div>
                     )}
                 </div>
