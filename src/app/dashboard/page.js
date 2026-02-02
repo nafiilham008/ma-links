@@ -1,6 +1,6 @@
 "use client";
-import { useState, useEffect } from "react";
-import { ArrowLeftOnRectangleIcon, UsersIcon, GlobeAltIcon, EyeIcon } from "@heroicons/react/24/outline";
+import { useState, useEffect, useRef } from "react";
+import { ArrowLeftOnRectangleIcon, UsersIcon, GlobeAltIcon, EyeIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/navigation";
 import UserDashboard from "@/components/UserDashboard";
 
@@ -18,6 +18,10 @@ export default function Dashboard() {
     const [loadingUsers, setLoadingUsers] = useState(false);
     const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0, totalPages: 0 });
     const [toast, setToast] = useState({ show: false, message: "", type: "success" });
+    const [editingUser, setEditingUser] = useState(null);
+    const [confirmAction, setConfirmAction] = useState({ show: false, title: "", message: "", onConfirm: null, type: "danger" });
+    const [usernameError, setUsernameError] = useState("");
+    const [checkingUsername, setCheckingUsername] = useState(false);
 
     function showToast(message, type = "success") {
         setToast({ show: true, message, type });
@@ -101,9 +105,90 @@ export default function Dashboard() {
         fetchAllUsers(1, newLimit);
     }
 
+    async function handleDeleteUser(user) {
+        setConfirmAction({
+            show: true,
+            title: "Delete User",
+            message: `Are you sure you want to delete user "@${user.username}"? This action is permanent and will remove all their links.`,
+            type: "danger",
+            onConfirm: async () => {
+                try {
+                    const res = await fetch(`/api/admin/users/${user.id}`, { method: 'DELETE' });
+                    if (res.ok) {
+                        showToast("User deleted successfully");
+                        fetchAllUsers(pagination.page, pagination.limit);
+                        fetchAdminStats();
+                    } else {
+                        const err = await res.json();
+                        showToast(err.error || "Failed to delete user", "error");
+                    }
+                } catch (err) {
+                    showToast("Connection error", "error");
+                } finally {
+                    setConfirmAction(prev => ({ ...prev, show: false }));
+                }
+            }
+        });
+    }
+
+    async function handleUpdateUser(e) {
+        e.preventDefault();
+        try {
+            const res = await fetch(`/api/admin/users/${editingUser.id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: editingUser.name, username: editingUser.username })
+            });
+            if (res.ok) {
+                showToast("User updated successfully");
+                setEditingUser(null);
+                fetchAllUsers(pagination.page, pagination.limit);
+            } else {
+                const err = await res.json();
+                showToast(err.error || "Failed to update user", "error");
+            }
+        } catch (err) {
+            showToast("Connection error", "error");
+        }
+    }
+
     async function handleLogout() {
         await fetch("/api/auth/logout", { method: "POST" });
         router.push("/login");
+    }
+
+    const checkUsernameTimeoutRef = useRef(null);
+    async function checkUsernameAvailability(username, userId) {
+        if (!username || username.length < 3) return;
+        setCheckingUsername(true);
+        try {
+            const res = await fetch(`/api/admin/check-username?username=${username}`);
+            if (res.ok) {
+                const data = await res.json();
+                if (!data.available && data.ownerId !== userId) {
+                    setUsernameError("Username is already taken");
+                } else {
+                    setUsernameError("");
+                }
+            }
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setCheckingUsername(false);
+        }
+    }
+
+    function handleUsernameChange(val) {
+        const cleanVal = val.toLowerCase().replace(/[^a-z0-9._-]/g, '');
+        setEditingUser({ ...editingUser, username: cleanVal });
+        setUsernameError("");
+
+        if (checkUsernameTimeoutRef.current) clearTimeout(checkUsernameTimeoutRef.current);
+        if (cleanVal === editingUser.username) return; // No change
+
+        checkUsernameTimeoutRef.current = setTimeout(() => {
+            checkUsernameAvailability(cleanVal, editingUser.id);
+        }, 500);
     }
 
     if (loading) return (
@@ -141,7 +226,6 @@ export default function Dashboard() {
                     <div className="text-center text-slate-500 animate-pulse">Loading real-time stats...</div>
                 ) : (
                     <>
-                        {/* Stats Grid */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
                             <div className="bg-slate-800 border border-slate-700 p-6 rounded-2xl relative overflow-hidden group">
                                 <div className="absolute right-0 top-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
@@ -278,6 +362,7 @@ export default function Dashboard() {
                                             <th className="px-6 py-4">Links</th>
                                             <th className="px-6 py-4">Views</th>
                                             <th className="px-6 py-4">Joined</th>
+                                            <th className="px-6 py-4 text-right">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-slate-700">
@@ -287,7 +372,7 @@ export default function Dashboard() {
                                             <tr><td colSpan="6" className="px-6 py-8 text-center text-slate-500">No users found.</td></tr>
                                         ) : (
                                             allUsers.map((user) => (
-                                                <tr key={user.id} className="hover:bg-slate-700/50 transition-colors">
+                                                <tr key={user.id} className="hover:bg-slate-700/50 transition-colors group">
                                                     <td className="px-6 py-4">
                                                         <div className="flex items-center gap-3">
                                                             <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center overflow-hidden font-bold border border-slate-600">
@@ -303,6 +388,16 @@ export default function Dashboard() {
                                                     <td className="px-6 py-4 text-slate-300">{user._count?.links || 0}</td>
                                                     <td className="px-6 py-4 text-slate-300">{user.views}</td>
                                                     <td className="px-6 py-4 text-slate-400 font-mono text-xs">{new Date(user.createdAt).toLocaleDateString()}</td>
+                                                    <td className="px-6 py-4 text-right">
+                                                        <div className="flex justify-end gap-2 transition-all">
+                                                            <button onClick={() => setEditingUser(user)} className="p-2 text-slate-400 hover:text-white hover:bg-slate-600 rounded-lg transition-all">
+                                                                <PencilIcon className="w-4 h-4 cursor-pointer" />
+                                                            </button>
+                                                            <button onClick={() => handleDeleteUser(user)} className="p-2 text-slate-400 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all">
+                                                                <TrashIcon className="w-4 h-4 cursor-pointer" />
+                                                            </button>
+                                                        </div>
+                                                    </td>
                                                 </tr>
                                             ))
                                         )}
@@ -334,8 +429,72 @@ export default function Dashboard() {
 
                         {/* Toast Notification */}
                         {toast.show && (
-                            <div className={`fixed bottom-4 right-4 px-6 py-4 rounded-xl shadow-2xl text-white font-bold animate-slide-up z-[70] ${toast.type === "error" ? "bg-red-500" : "bg-emerald-500"}`}>
+                            <div className={`fixed bottom-4 right-4 px-6 py-4 rounded-xl shadow-2xl text-white font-bold animate-slide-up z-[80] ${toast.type === "error" ? "bg-red-500" : "bg-emerald-500"}`}>
                                 {toast.message}
+                            </div>
+                        )}
+
+                        {/* Edit User Modal */}
+                        {editingUser && (
+                            <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-[60]">
+                                <div className="bg-slate-800 rounded-2xl w-full max-w-md border border-slate-700 shadow-2xl p-6">
+                                    <div className="flex justify-between items-center mb-6">
+                                        <h2 className="text-xl font-bold text-white">Edit User</h2>
+                                        <button onClick={() => setEditingUser(null)} className="text-slate-500 hover:text-white">✕</button>
+                                    </div>
+                                    <form onSubmit={handleUpdateUser} className="space-y-4">
+                                        <div>
+                                            <label className="block text-slate-400 text-xs font-bold uppercase mb-1">Display Name</label>
+                                            <input
+                                                required
+                                                value={editingUser.name || ""}
+                                                onChange={e => setEditingUser({ ...editingUser, name: e.target.value })}
+                                                className="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 text-white focus:border-indigo-500 outline-none"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-slate-400 text-xs font-bold uppercase mb-1">Username</label>
+                                            <div className="relative">
+                                                <input
+                                                    required
+                                                    value={editingUser.username || ""}
+                                                    onChange={e => handleUsernameChange(e.target.value)}
+                                                    className={`w-full bg-slate-900 border ${usernameError ? 'border-red-500' : 'border-slate-600'} rounded-lg p-3 text-white focus:border-indigo-500 outline-none font-mono`}
+                                                />
+                                                {checkingUsername && (
+                                                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                                                        <div className="w-4 h-4 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                            {usernameError && <p className="text-red-500 text-[10px] mt-1 font-bold italic">{usernameError}</p>}
+                                        </div>
+                                        <div className="flex gap-3 pt-4">
+                                            <button type="button" onClick={() => { setEditingUser(null); setUsernameError(""); }} className="flex-1 bg-slate-700 hover:bg-slate-600 text-white py-3 rounded-xl font-bold transition-all">Cancel</button>
+                                            <button
+                                                type="submit"
+                                                disabled={!!usernameError || checkingUsername}
+                                                className={`flex-1 py-3 rounded-xl font-bold transition-all ${!!usernameError || checkingUsername ? 'bg-slate-700 text-slate-500 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-500 text-white'}`}
+                                            >
+                                                {checkingUsername ? "Checking..." : "Save Changes"}
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Custom Confirmation Modal */}
+                        {confirmAction.show && (
+                            <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-[70]">
+                                <div className="bg-slate-800 rounded-2xl w-full max-w-sm border border-slate-700 shadow-2xl p-6 text-center">
+                                    <h3 className="text-xl font-bold text-white mb-2">{confirmAction.title}</h3>
+                                    <p className="text-slate-400 text-sm mb-8">{confirmAction.message}</p>
+                                    <div className="flex gap-3">
+                                        <button onClick={() => setConfirmAction({ ...confirmAction, show: false })} className="flex-1 bg-slate-700 hover:bg-slate-600 text-white py-2.5 rounded-lg font-bold transition-all">Cancel</button>
+                                        <button onClick={confirmAction.onConfirm} className={`flex-1 py-2.5 rounded-lg font-bold transition-all shadow-lg ${confirmAction.type === 'danger' ? 'bg-red-600 hover:bg-red-500 shadow-red-500/20' : 'bg-indigo-600 hover:bg-indigo-500 shadow-indigo-500/20'}`}>Confirm</button>
+                                    </div>
+                                </div>
                             </div>
                         )}
                     </>
