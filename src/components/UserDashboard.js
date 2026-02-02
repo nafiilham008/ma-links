@@ -52,12 +52,18 @@ export default function UserDashboard({ user }) {
     const [changingPassword, setChangingPassword] = useState(false);
     const [showPasswords, setShowPasswords] = useState({ current: false, new: false, confirm: false });
     const [usernameError, setUsernameError] = useState("");
+    const [pendingUsername, setPendingUsername] = useState(user?.username || "");
     const [checkingUsername, setCheckingUsername] = useState(false);
+    const [claimingUsername, setClaimingUsername] = useState(false);
 
     const saveTimeoutRef = useRef(null);
 
-    // Unified Update Function (Optimistic UI + Debounced Save)
     function updateProfile(updates) {
+        // Skip auto-save if trying to change username for google users
+        if (updates.username && profileData.provider === 'google' && !profileData.usernameChanged) {
+            return;
+        }
+
         // 1. Optimistic Update
         const newData = { ...profileData, ...updates };
         setProfileData(newData);
@@ -226,6 +232,7 @@ export default function UserDashboard({ user }) {
     }
 
     async function handlePasswordChange(e) {
+        // ... (rest of the function remains same, I'll just add the new function after it)
         e.preventDefault();
         if (passwordData.new.length < 6) { showToast("Password must be at least 6 chars", "error"); return; }
         if (passwordData.new !== passwordData.confirmNew) { showToast("Passwords do not match", "error"); return; }
@@ -235,6 +242,45 @@ export default function UserDashboard({ user }) {
             const data = await res.json();
             if (res.ok) { showToast("Password changed!"); setPasswordData({ current: "", new: "", confirmNew: "" }); } else { showToast(data.error || "Failed", "error"); }
         } catch (error) { showToast("Error", "error"); } finally { setChangingPassword(false); }
+    }
+
+    async function handleClaimUsername() {
+        if (!pendingUsername) return;
+        if (pendingUsername === profileData.username) {
+            showToast("Username must be different", "error");
+            return;
+        }
+
+        if (!confirm(`Yakin ingin klaim username "@${pendingUsername}"?\n\nUsername cuma bisa diganti SEKALI lho Pak!`)) {
+            return;
+        }
+
+        setClaimingUsername(true);
+        setUsernameError("");
+
+        try {
+            const res = await fetch("/api/auth/profile", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ ...profileData, username: pendingUsername })
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                setProfileData(prev => ({ ...prev, username: pendingUsername, usernameChanged: true }));
+                showToast("Username berhasil diklaim! 🚀");
+                router.refresh();
+            } else {
+                setUsernameError(data.error || "Gagal klaim username");
+                showToast(data.error || "Gagal klaim username", "error");
+            }
+        } catch (error) {
+            console.error(error);
+            showToast("Kesalahan koneksi", "error");
+        } finally {
+            setClaimingUsername(false);
+        }
     }
 
     if (loading) return <div className="min-h-screen bg-slate-900 flex items-center justify-center text-white">Loading Dashboard...</div>;
@@ -389,22 +435,38 @@ export default function UserDashboard({ user }) {
                                                 <p className="text-indigo-300/60 text-[10px]">Login Google memberimu 1x kesempatan ganti username.</p>
                                             </div>
                                         </div>
-                                        <div className="relative">
-                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-mono text-[10px] sm:text-xs leading-none flex items-center">
-                                                malinks.web.id/
+                                        <div className="space-y-3">
+                                            <div className="relative">
+                                                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-mono text-[10px] sm:text-xs leading-none flex items-center">
+                                                    malinks.web.id/
+                                                </div>
+                                                <input
+                                                    type="text"
+                                                    value={pendingUsername}
+                                                    onChange={(e) => {
+                                                        const val = e.target.value.toLowerCase().replace(/[^a-z0-9._-]/g, '');
+                                                        setPendingUsername(val);
+                                                        setUsernameError("");
+                                                    }}
+                                                    placeholder="username-pilihanmu"
+                                                    className={`w-full bg-slate-900 border ${usernameError ? 'border-red-500' : 'border-slate-700'} rounded-xl py-3 pl-[125px] pr-4 text-white focus:outline-none focus:border-indigo-500 font-mono text-sm transition-all`}
+                                                />
                                             </div>
-                                            <input
-                                                type="text"
-                                                value={profileData.username || ""}
-                                                onChange={(e) => {
-                                                    const val = e.target.value.toLowerCase().replace(/[^a-z0-9._-]/g, '');
-                                                    updateProfile({ username: val });
-                                                    setUsernameError("");
-                                                }}
-                                                placeholder="username-pilihanmu"
-                                                className={`w-full bg-slate-900 border ${usernameError ? 'border-red-500' : 'border-slate-700'} rounded-xl py-3 pl-[125px] pr-4 text-white focus:outline-none focus:border-indigo-500 font-mono text-sm transition-all`}
-                                            />
-                                            {usernameError && <p className="text-red-500 text-[10px] mt-1 ml-1 font-bold italic">{usernameError}</p>}
+                                            {usernameError && <p className="text-red-500 text-[10px] ml-1 font-bold italic">{usernameError}</p>}
+
+                                            <button
+                                                onClick={handleClaimUsername}
+                                                disabled={claimingUsername || !pendingUsername || pendingUsername === profileData.username}
+                                                className={`w-full py-3 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-2 ${claimingUsername || !pendingUsername || pendingUsername === profileData.username
+                                                        ? 'bg-slate-700 text-slate-500 cursor-not-allowed'
+                                                        : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-500/20 active:scale-[0.98]'
+                                                    }`}
+                                            >
+                                                {claimingUsername ? (
+                                                    <div className="w-4 h-4 border-2 border-indigo-200 border-t-transparent rounded-full animate-spin"></div>
+                                                ) : <IconBolt className="w-4 h-4" />}
+                                                {claimingUsername ? "Mengklaim..." : "Simpan & Klaim Username"}
+                                            </button>
                                         </div>
                                     </div>
                                 )}
