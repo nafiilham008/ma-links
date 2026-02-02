@@ -37,8 +37,8 @@ export default function AmbientBackground({ themeName, fixed = false }) {
 
         const animationTypes = ['up', 'down', 'left', 'right', 'fade', 'fade', 'up'];
 
-        // Increased density to 50 for fuller coverage
-        const newParticles = Array.from({ length: 50 }).map((_, i) => {
+        // Reduced density to 20 to prevent lag
+        const newParticles = Array.from({ length: 20 }).map((_, i) => {
             const type = animationTypes[Math.floor(Math.random() * animationTypes.length)];
             const duration = 15 + Math.random() * 20;
             const delay = -(Math.random() * duration); // Start mid-animation
@@ -94,9 +94,9 @@ export default function AmbientBackground({ themeName, fixed = false }) {
 
     if (particles.length === 0) return null;
 
-    // z-20 puts it above standard content (usually z-10) but below modals (z-50+)
+    // z-0 puts it behind the content (z-10) but requires transparent cards to be visible
     return (
-        <div className={`${fixed ? 'fixed' : 'absolute'} inset-0 pointer-events-none overflow-hidden z-20`}>
+        <div className={`${fixed ? 'fixed' : 'absolute'} inset-0 pointer-events-none overflow-hidden z-0`}>
             {particles.map(p => (
                 <div
                     key={p.id}

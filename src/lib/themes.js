@@ -6,7 +6,7 @@ export const themePresets = {
         icon: "IconSmartHome",
         bg: "bg-slate-900",
         text: "text-slate-100",
-        cardBg: "bg-slate-800",
+        cardBg: "bg-slate-800/80",
         cardBorder: "border-slate-700",
         buttonHover: "hover:bg-slate-700",
         accent: "text-indigo-400"
@@ -118,7 +118,7 @@ export const themePresets = {
         icon: "IconSun",
         bg: "bg-gradient-to-br from-yellow-400 via-orange-500 to-red-600 animate-gradient",
         text: "text-orange-50",
-        cardBg: "bg-black/20",
+        cardBg: "bg-black/40",
         cardBorder: "border-orange-400/30",
         buttonHover: "hover:bg-black/30",
         accent: "text-yellow-300"
@@ -129,7 +129,7 @@ export const themePresets = {
         icon: "IconBolt",
         bg: "bg-gradient-to-br from-fuchsia-600 via-purple-700 to-blue-900 animate-gradient",
         text: "text-fuchsia-50",
-        cardBg: "bg-black/40",
+        cardBg: "bg-black/60",
         cardBorder: "border-fuchsia-500/50",
         buttonHover: "hover:bg-black/60",
         accent: "text-fuchsia-400"
@@ -141,7 +141,7 @@ export const themePresets = {
         icon: null,
         bg: "bg-black",
         text: "text-white",
-        cardBg: "bg-zinc-900",
+        cardBg: "bg-slate-800/80",
         cardBorder: "border-lime-400",
         buttonHover: "hover:bg-zinc-800",
         accent: "text-lime-400"
