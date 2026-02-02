@@ -37,7 +37,8 @@ export default function AmbientBackground({ themeName, fixed = false }) {
 
         const animationTypes = ['up', 'down', 'left', 'right', 'fade', 'fade', 'up'];
 
-        const newParticles = Array.from({ length: 30 }).map((_, i) => {
+        // Increased density to 50 for fuller coverage
+        const newParticles = Array.from({ length: 50 }).map((_, i) => {
             const type = animationTypes[Math.floor(Math.random() * animationTypes.length)];
             const duration = 15 + Math.random() * 20;
             const delay = -(Math.random() * duration); // Start mid-animation
@@ -52,7 +53,7 @@ export default function AmbientBackground({ themeName, fixed = false }) {
             // Core positioning - avoid fixed top:0 if it conflicts
             // For movement animations, transform handles the motion.
             // We just need a valid start position (like left/top % inside container)
-            let className = "absolute select-none opacity-70 pointer-events-none ";
+            let className = "absolute select-none opacity-50 pointer-events-none ";
 
             if (type === 'up') {
                 className += "animate-float-up";
@@ -93,8 +94,9 @@ export default function AmbientBackground({ themeName, fixed = false }) {
 
     if (particles.length === 0) return null;
 
+    // z-20 puts it above standard content (usually z-10) but below modals (z-50+)
     return (
-        <div className={`${fixed ? 'fixed' : 'absolute'} inset-0 pointer-events-none overflow-hidden z-[5]`}>
+        <div className={`${fixed ? 'fixed' : 'absolute'} inset-0 pointer-events-none overflow-hidden z-20`}>
             {particles.map(p => (
                 <div
                     key={p.id}
