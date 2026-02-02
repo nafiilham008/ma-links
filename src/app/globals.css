@@ -159,23 +159,33 @@
     }
 
     .animate-float-up {
-        animation: float-up linear infinite;
+        animation-name: float-up;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
     }
 
     .animate-float-down {
-        animation: float-down linear infinite;
+        animation-name: float-down;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
     }
 
     .animate-float-left {
-        animation: float-left linear infinite;
+        animation-name: float-left;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
     }
 
     .animate-float-right {
-        animation: float-right linear infinite;
+        animation-name: float-right;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
     }
 
     .animate-fade-float {
-        animation: fade-float ease-in-out infinite;
+        animation-name: fade-float;
+        animation-timing-function: ease-in-out;
+        animation-iteration-count: infinite;
     }
 
     @keyframes orb-float {
