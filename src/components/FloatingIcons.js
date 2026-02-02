@@ -1,5 +1,5 @@
 "use client";
-import { SparklesIcon, ShoppingBagIcon, HeartIcon } from "@heroicons/react/24/outline";
+import { SparklesIcon, ShoppingBagIcon, HeartIcon, StarIcon, RocketLaunchIcon, GiftIcon } from "@heroicons/react/24/outline";
 
 export default function FloatingIcons() {
     return (
@@ -22,6 +22,23 @@ export default function FloatingIcons() {
             {/* Top Right */}
             <div className="absolute top-[15%] right-[15%] animate-orb" style={{ animationDuration: '10s', animationDelay: '-3s' }}>
                 <SparklesIcon className="w-8 h-8 text-indigo-300 -rotate-12" />
+            </div>
+
+            {/* New Icons */}
+            <div className="absolute top-[30%] left-[40%] animate-orb" style={{ animationDuration: '20s', animationDelay: '-7s' }}>
+                <StarIcon className="w-14 h-14 text-yellow-400/50 rotate-12" />
+            </div>
+
+            <div className="absolute bottom-[15%] left-[20%] animate-orb" style={{ animationDuration: '18s', animationDelay: '-1s' }}>
+                <RocketLaunchIcon className="w-12 h-12 text-orange-400/50 -rotate-45" />
+            </div>
+
+            <div className="absolute top-[60%] right-[5%] animate-orb" style={{ animationDuration: '25s', animationDelay: '-10s' }}>
+                <GiftIcon className="w-10 h-10 text-red-400/50 rotate-12" />
+            </div>
+
+            <div className="absolute bottom-[40%] right-[35%] animate-orb" style={{ animationDuration: '22s', animationDelay: '-4s' }}>
+                <StarIcon className="w-8 h-8 text-indigo-200/50 -rotate-12" />
             </div>
         </div>
     );

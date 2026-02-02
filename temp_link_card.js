@@ -67,7 +67,7 @@ export default function LinkCard({ link, theme, buttonStyle, isPreview = false }
                         )}
 
                         {link.image && (
-                            <div className="absolute inset-0 bg-black/10 opacity-0 group-hover/image:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                            <div className="absolute inset-0 bg-black/10 opacity-0 group-hover/image:opacity-100 transition-opacity flex items-center justify-center">
                                 <span className="text-white text-[10px] font-bold uppercase tracking-widest">Zoom</span>
                             </div>
                         )}

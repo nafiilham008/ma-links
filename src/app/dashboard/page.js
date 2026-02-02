@@ -35,6 +35,11 @@ export default function Dashboard() {
                 const data = await res.json();
                 setProfileData(data);
 
+                if (!data.emailVerified) {
+                    router.push(`/verify-email?email=${encodeURIComponent(data.email)}&warn=true`);
+                    return;
+                }
+
                 // Check role
                 if (data.role === 'super admin') {
                     setIsAdmin(true);

@@ -51,3 +51,6 @@ next-env.d.ts
 !/public/uploads/.gitkeep
 
 /src/generated/prisma
+
+# Private Docs
+DEV_NOTE.md

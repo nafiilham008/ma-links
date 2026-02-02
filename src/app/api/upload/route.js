@@ -12,10 +12,17 @@ export async function POST(request) {
     }
 
     const buffer = Buffer.from(await file.arrayBuffer());
-    const filename = Date.now() + "_" + file.name.replaceAll(" ", "_");
+    // Sanitize filename: remove special characters, keep only alphanum, underscores, dots, and dashes
+    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+    const filename = Date.now() + "_" + safeName;
 
     try {
-        const uploadDir = path.join(process.cwd(), "public/uploads");
+        // Use persistent path on VPS, fallback to local for development
+        let uploadDir = "/var/www/ma-links-uploads";
+        if (!existsSync(uploadDir)) {
+            uploadDir = path.join(process.cwd(), "public/uploads");
+        }
+
         if (!existsSync(uploadDir)) {
             await mkdir(uploadDir, { recursive: true });
         }

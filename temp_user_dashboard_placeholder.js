@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { PlusIcon, TrashIcon, PencilIcon, ArrowTopRightOnSquareIcon, ArrowLeftOnRectangleIcon, ChevronDownIcon, SwatchIcon, UsersIcon, EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+import { PlusIcon, TrashIcon, PencilIcon, ArrowTopRightOnSquareIcon, ArrowLeftOnRectangleIcon, ChevronDownIcon, SwatchIcon, UsersIcon, EyeIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/navigation";
 import { themePresets, buttonStyles } from "@/lib/themes";
 import ProfileClient from "@/components/ProfileClient";
@@ -48,11 +48,8 @@ export default function UserDashboard({ user }) {
     const [savingProfile, setSavingProfile] = useState(false);
     const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
     const [formData, setFormData] = useState({ title: "", url: "", platform: "", category: "", image: "" });
-    const [passwordData, setPasswordData] = useState({ current: "", new: "", confirmNew: "" });
+    const [passwordData, setPasswordData] = useState({ current: "", new: "" });
     const [changingPassword, setChangingPassword] = useState(false);
-    const [showPasswords, setShowPasswords] = useState({ current: false, new: false, confirm: false });
-    const [usernameError, setUsernameError] = useState("");
-    const [checkingUsername, setCheckingUsername] = useState(false);
 
     const saveTimeoutRef = useRef(null);
 
@@ -228,12 +225,11 @@ export default function UserDashboard({ user }) {
     async function handlePasswordChange(e) {
         e.preventDefault();
         if (passwordData.new.length < 6) { showToast("Password must be at least 6 chars", "error"); return; }
-        if (passwordData.new !== passwordData.confirmNew) { showToast("Passwords do not match", "error"); return; }
         setChangingPassword(true);
         try {
             const res = await fetch("/api/auth/password", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ currentPassword: passwordData.current, newPassword: passwordData.new }) });
             const data = await res.json();
-            if (res.ok) { showToast("Password changed!"); setPasswordData({ current: "", new: "", confirmNew: "" }); } else { showToast(data.error || "Failed", "error"); }
+            if (res.ok) { showToast("Password changed!"); setPasswordData({ current: "", new: "" }); } else { showToast(data.error || "Failed", "error"); }
         } catch (error) { showToast("Error", "error"); } finally { setChangingPassword(false); }
     }
 
@@ -377,45 +373,6 @@ export default function UserDashboard({ user }) {
                         {/* --- TAB: APPEARANCE --- */}
                         {activeTab === "appearance" && (
                             <div className="space-y-8">
-                                {/* Username Section (Only for Google users who haven't changed yet) */}
-                                {profileData.provider === 'google' && !profileData.usernameChanged && (
-                                    <div className="bg-indigo-500/10 border border-indigo-500/20 rounded-2xl p-6 mb-2">
-                                        <div className="flex items-center gap-3 mb-4">
-                                            <div className="w-10 h-10 rounded-full bg-indigo-500/20 flex items-center justify-center text-indigo-400">
-                                                <UsersIcon className="w-6 h-6" />
-                                            </div>
-                                            <div>
-                                                <h3 className="text-white font-bold text-sm">Klaim Username Pilihanmu!</h3>
-                                                <p className="text-indigo-300/60 text-[10px]">Login Google memberimu 1x kesempatan ganti username.</p>
-                                            </div>
-                                        </div>
-                                        <div className="relative">
-                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-mono text-[10px] sm:text-xs leading-none flex items-center">
-                                                malinks.web.id/
-                                            </div>
-                                            <input
-                                                type="text"
-                                                value={profileData.username || ""}
-                                                onChange={(e) => {
-                                                    const val = e.target.value.toLowerCase().replace(/[^a-z0-9._-]/g, '');
-                                                    updateProfile({ username: val });
-                                                    setUsernameError("");
-                                                }}
-                                                placeholder="username-pilihanmu"
-                                                className={`w-full bg-slate-900 border ${usernameError ? 'border-red-500' : 'border-slate-700'} rounded-xl py-3 pl-[125px] pr-4 text-white focus:outline-none focus:border-indigo-500 font-mono text-sm transition-all`}
-                                            />
-                                            {usernameError && <p className="text-red-500 text-[10px] mt-1 ml-1 font-bold italic">{usernameError}</p>}
-                                        </div>
-                                    </div>
-                                )}
-
-                                {profileData.provider === 'google' && profileData.usernameChanged && (
-                                    <div className="bg-slate-800/50 border border-slate-700/50 rounded-2xl p-4 mb-2 flex items-center gap-3 opacity-60 italic">
-                                        <UsersIcon className="w-5 h-5 text-slate-500" />
-                                        <span className="text-slate-400 text-[10px]">Username anda: <strong>@{profileData.username}</strong> (Username sudah diganti 1x)</span>
-                                    </div>
-                                )}
-
                                 {/* Profile Section */}
                                 <section className="bg-slate-800 p-6 rounded-2xl border border-slate-700">
                                     <h2 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
@@ -608,67 +565,30 @@ export default function UserDashboard({ user }) {
                                     </div>
                                 </section>
 
-                                {profileData.provider !== 'google' && (
-                                    <section className="bg-slate-800 p-6 rounded-2xl border border-slate-700">
-                                        <h2 className="text-lg font-bold text-white mb-6">Change Password</h2>
-                                        <form onSubmit={handlePasswordChange} className="space-y-4">
-                                            <div className="relative">
-                                                <input
-                                                    type={showPasswords.current ? "text" : "password"}
-                                                    value={passwordData.current}
-                                                    onChange={e => setPasswordData({ ...passwordData, current: e.target.value })}
-                                                    className="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 pr-12 text-white focus:outline-none focus:border-indigo-500"
-                                                    placeholder="Current Password"
-                                                    required
-                                                />
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setShowPasswords(prev => ({ ...prev, current: !prev.current }))}
-                                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
-                                                >
-                                                    {showPasswords.current ? <EyeSlashIcon className="w-5 h-5" /> : <EyeIcon className="w-5 h-5" />}
-                                                </button>
-                                            </div>
-                                            <div className="relative">
-                                                <input
-                                                    type={showPasswords.new ? "text" : "password"}
-                                                    value={passwordData.new}
-                                                    onChange={e => setPasswordData({ ...passwordData, new: e.target.value })}
-                                                    className="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 pr-12 text-white focus:outline-none focus:border-indigo-500"
-                                                    placeholder="New Password (min 6 chars)"
-                                                    required
-                                                />
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setShowPasswords(prev => ({ ...prev, new: !prev.current }))}
-                                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
-                                                >
-                                                    {showPasswords.new ? <EyeSlashIcon className="w-5 h-5" /> : <EyeIcon className="w-5 h-5" />}
-                                                </button>
-                                            </div>
-                                            <div className="relative">
-                                                <input
-                                                    type={showPasswords.confirm ? "text" : "password"}
-                                                    value={passwordData.confirmNew}
-                                                    onChange={e => setPasswordData({ ...passwordData, confirmNew: e.target.value })}
-                                                    className="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 pr-12 text-white focus:outline-none focus:border-indigo-500"
-                                                    placeholder="Confirm New Password"
-                                                    required
-                                                />
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setShowPasswords(prev => ({ ...prev, confirm: !prev.confirm }))}
-                                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
-                                                >
-                                                    {showPasswords.confirm ? <EyeSlashIcon className="w-5 h-5" /> : <EyeIcon className="w-5 h-5" />}
-                                                </button>
-                                            </div>
-                                            <button type="submit" className="bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 rounded-xl transition-all w-full">
-                                                {changingPassword ? "Updating..." : "Update Password"}
-                                            </button>
-                                        </form>
-                                    </section>
-                                )}
+                                <section className="bg-slate-800 p-6 rounded-2xl border border-slate-700">
+                                    <h2 className="text-lg font-bold text-white mb-6">Change Password</h2>
+                                    <form onSubmit={handlePasswordChange} className="space-y-4">
+                                        <input
+                                            type="password"
+                                            value={passwordData.current}
+                                            onChange={e => setPasswordData({ ...passwordData, current: e.target.value })}
+                                            className="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 text-white focus:outline-none focus:border-indigo-500"
+                                            placeholder="Current Password"
+                                            required
+                                        />
+                                        <input
+                                            type="password"
+                                            value={passwordData.new}
+                                            onChange={e => setPasswordData({ ...passwordData, new: e.target.value })}
+                                            className="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 text-white focus:outline-none focus:border-indigo-500"
+                                            placeholder="New Password (min 6 chars)"
+                                            required
+                                        />
+                                        <button type="submit" className="bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 rounded-xl transition-all w-full">
+                                            {changingPassword ? "Updating..." : "Update Password"}
+                                        </button>
+                                    </form>
+                                </section>
                             </div>
                         )}
                     </div>
@@ -681,12 +601,8 @@ export default function UserDashboard({ user }) {
                             </div>
                             <div className="mockup-phone border-slate-800 bg-slate-900 rounded-[3rem] border-[14px] overflow-hidden shadow-2xl w-full max-w-[320px] mx-auto aspect-[9/19] relative">
                                 <div className="h-full w-full overflow-y-auto no-scrollbar relative">
-                                    {/* Interaction blocker - allows scroll but blocks clicks/zooms more reliably */}
-                                    <div className="absolute inset-x-0 top-0 bottom-0 z-50 pointer-events-none"></div>
-                                    <div className="origin-top-left transition-transform duration-300"
-                                        style={{ transform: 'scale(0.75)', height: '133.34%', width: '133.34%' }}>
-                                        <ProfileClient user={userForPreview} isPreview={true} />
-                                    </div>
+                                    <div className="absolute inset-0 z-50 pointer-events-none"></div>
+                                    <ProfileClient user={userForPreview} isPreview={true} />
                                 </div>
                             </div>
                         </div>
@@ -751,21 +667,10 @@ export default function UserDashboard({ user }) {
                                 <div>
                                     <label className="block text-slate-400 text-xs font-bold uppercase mb-1">Thumbnail (Optional)</label>
                                     <div className="flex items-center gap-4">
-                                        {formData.image && (
-                                            <div className="relative group/thumb">
-                                                <img src={formData.image} className="w-12 h-12 rounded-lg object-cover bg-slate-900 border border-slate-700" />
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setFormData(prev => ({ ...prev, image: "" }))}
-                                                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-lg opacity-0 group-hover/thumb:opacity-100 transition-opacity"
-                                                >
-                                                    <TrashIcon className="w-3 h-3" />
-                                                </button>
-                                            </div>
-                                        )}
+                                        {formData.image && <img src={formData.image} className="w-12 h-12 rounded-lg object-cover bg-slate-900" />}
                                         <label className="flex-1 cursor-pointer bg-slate-900 border border-slate-600 hover:bg-slate-700 rounded-lg p-3 text-center transition-colors">
                                             <span className="text-sm font-bold text-slate-300">
-                                                {uploading ? "Uploading..." : formData.image ? "Change Image (Max 2MB)" : "Choose Image (Max 2MB)"}
+                                                {uploading ? "Uploading..." : "Choose Image (Max 2MB)"}
                                             </span>
                                             <input type="file" className="hidden" onChange={handleFileUpload} accept="image/*" />
                                         </label>

@@ -1,10 +1,13 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import FloatingIcons from "@/components/FloatingIcons";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 
 export default function Login() {
     const [formData, setFormData] = useState({ username: "", password: "" });
     const [error, setError] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
     const router = useRouter();
 
 
@@ -75,8 +78,9 @@ export default function Login() {
     }
 
     return (
-        <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
-            <div className="bg-slate-800 p-8 rounded-2xl border border-slate-700 w-full max-w-md shadow-xl">
+        <div className="relative min-h-screen bg-slate-900 flex items-center justify-center p-4 overflow-hidden">
+            <FloatingIcons />
+            <div className="relative z-10 bg-slate-800 p-8 rounded-2xl border border-slate-700 w-full max-w-md shadow-xl">
                 <h1 className="text-2xl font-bold text-white mb-6 text-center tracking-tight">Welcome Back</h1>
 
                 {error && <div className="bg-red-500/10 text-red-500 p-3 rounded-lg mb-4 text-sm font-bold">{error}</div>}
@@ -94,13 +98,22 @@ export default function Login() {
                     </div>
                     <div>
                         <label className="block text-slate-400 text-xs font-bold uppercase mb-1">Password</label>
-                        <input
-                            type="password"
-                            required
-                            value={formData.password}
-                            onChange={e => setFormData({ ...formData, password: e.target.value })}
-                            className="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none"
-                        />
+                        <div className="relative">
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                required
+                                value={formData.password}
+                                onChange={e => setFormData({ ...formData, password: e.target.value })}
+                                className="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 pr-12 text-white focus:ring-2 focus:ring-indigo-500 outline-none"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
+                            >
+                                {showPassword ? <EyeSlashIcon className="w-5 h-5" /> : <EyeIcon className="w-5 h-5" />}
+                            </button>
+                        </div>
                     </div>
                 </form>
 

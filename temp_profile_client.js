@@ -28,18 +28,14 @@ export default function ProfileClient({ user, isPreview = false }) {
     const currentButtonStyle = user.buttonStyle || "rounded";
 
     const categories = useMemo(() => {
-        const cats = new Set(user.links.map(l => l.category).filter(Boolean).map(c =>
-            c.trim().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ')
-        ));
+        const cats = new Set(user.links.map(l => l.category).filter(Boolean).map(c => c.charAt(0).toUpperCase() + c.slice(1).toLowerCase()));
         return ["All", ...Array.from(cats)];
     }, [user.links]);
 
     const filteredLinks = useMemo(() => {
         return user.links.filter(link => {
             const matchesSearch = link.title.toLowerCase().includes(search.toLowerCase());
-            // Title Case both for comparison to be safe
-            const normalizedLinkCat = link.category ? link.category.trim().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ') : null;
-            const matchesCategory = selectedCategory === "All" || normalizedLinkCat === selectedCategory;
+            const matchesCategory = selectedCategory === "All" || link.category === selectedCategory;
             return matchesSearch && matchesCategory;
         });
     }, [user.links, search, selectedCategory]);

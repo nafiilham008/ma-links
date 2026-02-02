@@ -40,7 +40,7 @@ export async function POST(request) {
             if (!user.googleId) {
                 user = await prisma.user.update({
                     where: { id: user.id },
-                    data: { googleId, provider: "google", avatar: user.avatar || picture }
+                    data: { googleId, provider: "google", avatar: user.avatar || picture, emailVerified: new Date() }
                 });
             }
         } else {
@@ -65,6 +65,7 @@ export async function POST(request) {
                     avatar: picture,
                     provider: "google",
                     password: "", // No password for google users
+                    emailVerified: new Date(),
                 }
             });
         }

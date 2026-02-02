@@ -1,6 +1,7 @@
 "use client";
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 
 function ResetForm() {
     const searchParams = useSearchParams();
@@ -11,6 +12,7 @@ function ResetForm() {
     const [password, setPassword] = useState("");
     const [status, setStatus] = useState("idle");
     const [message, setMessage] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -73,15 +75,24 @@ function ResetForm() {
                 </div>
                 <div>
                     <label className="block text-slate-400 text-xs font-bold uppercase mb-1">New Password</label>
-                    <input
-                        type="password"
-                        required
-                        value={password}
-                        onChange={e => setPassword(e.target.value)}
-                        className="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500 outline-none"
-                        placeholder="••••••"
-                        minLength={6}
-                    />
+                    <div className="relative">
+                        <input
+                            type={showPassword ? "text" : "password"}
+                            required
+                            value={password}
+                            onChange={e => setPassword(e.target.value)}
+                            className="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 pr-12 text-white focus:ring-2 focus:ring-indigo-500 outline-none"
+                            placeholder="••••••"
+                            minLength={6}
+                        />
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
+                        >
+                            {showPassword ? <EyeSlashIcon className="w-5 h-5" /> : <EyeIcon className="w-5 h-5" />}
+                        </button>
+                    </div>
                 </div>
 
                 <button

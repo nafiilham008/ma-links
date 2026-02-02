@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -33,6 +33,7 @@ model User {
   buttonStyle String @default("rounded") // rounded, box, soft, brutalist
   customBackground String? // URL to uploaded custom background
   enableAmbient Boolean @default(true) // Toggle for floating effects
+  usernameChanged Boolean @default(false)
   links     Link[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

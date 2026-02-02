@@ -10,6 +10,10 @@ export async function POST(request) {
 
         if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
 
+        // Safety check to prevent spam if already verified? 
+        // User asked to allow resend if otp not received, so we allow it.
+        // Maybe add rate limit check here if needed, but client has cooldown.
+
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
         const otpExpiry = new Date(Date.now() + 15 * 60 * 1000);
 

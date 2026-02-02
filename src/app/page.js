@@ -89,7 +89,7 @@ export default async function Home() {
                                     <div className="absolute inset-0 animate-shimmer pointer-events-none"></div>
                                     <span className="relative z-10">Create My Free Page</span>
                                 </Link>
-                                <Link href="/wulan" className="px-8 py-4 bg-slate-800 text-white font-bold text-lg rounded-xl hover:bg-slate-700 transition-all border border-slate-700">
+                                <Link href="/tester" className="px-8 py-4 bg-slate-800 text-white font-bold text-lg rounded-xl hover:bg-slate-700 transition-all border border-slate-700">
                                     View Demo Profile
                                 </Link>
                             </div>

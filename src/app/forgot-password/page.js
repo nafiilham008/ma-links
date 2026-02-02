@@ -2,6 +2,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+import FloatingIcons from "@/components/FloatingIcons";
+
 export default function ForgotPassword() {
     const [email, setEmail] = useState("");
     const [status, setStatus] = useState("idle");
@@ -25,8 +27,9 @@ export default function ForgotPassword() {
     }
 
     return (
-        <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
-            <div className="bg-slate-800 p-8 rounded-2xl border border-slate-700 w-full max-w-md shadow-xl">
+        <div className="relative min-h-screen bg-slate-900 flex items-center justify-center p-4 overflow-hidden">
+            <FloatingIcons />
+            <div className="relative z-10 bg-slate-800 p-8 rounded-2xl border border-slate-700 w-full max-w-md shadow-xl">
                 <h1 className="text-2xl font-bold text-white mb-2 text-center">Forgot Password?</h1>
                 <p className="text-slate-400 text-sm text-center mb-6">Enter your email to receive a reset code.</p>
 

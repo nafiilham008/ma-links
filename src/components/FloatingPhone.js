@@ -1,20 +1,14 @@
 "use client";
 export default function FloatingPhone() {
     return (
-        <div className="relative w-full max-w-[280px] mx-auto animate-orb group">
+        <div className="relative w-full max-w-[320px] mx-auto animate-orb group">
             {/* Glow behind phone */}
             <div className="absolute -inset-4 bg-gradient-to-tr from-indigo-500/20 to-purple-500/20 rounded-[3rem] blur-3xl group-hover:opacity-75 transition-opacity"></div>
 
             <div className="mockup-phone border-slate-800 bg-slate-900 rounded-[3rem] border-[10px] overflow-hidden shadow-2xl relative z-10">
                 <div className="camera"></div>
-                <div className="display pt-12 pb-6 px-4 bg-slate-950 relative h-[500px] overflow-hidden">
+                <div className="display pt-12 pb-6 px-4 bg-slate-950 relative h-[600px] overflow-hidden">
                     {/* Real Image Overlay (Optional) */}
-                    <img
-                        src="/hero-preview.png"
-                        alt="Hero Preview"
-                        className="absolute inset-0 w-full h-full object-cover z-30 transition-opacity duration-1000"
-                        onError={(e) => e.target.style.display = 'none'}
-                    />
 
                     {/* Premium Cyber/Dark Mockup */}
                     <div className="absolute inset-0 bg-gradient-to-br from-indigo-900 via-slate-950 to-purple-900 z-10"></div>

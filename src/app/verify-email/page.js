@@ -1,10 +1,11 @@
 "use client";
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 function VerifyForm() {
     const searchParams = useSearchParams();
     const emailParam = searchParams.get("email");
+    const warnParam = searchParams.get("warn");
     const router = useRouter();
 
     const [email, setEmail] = useState(emailParam || "");
@@ -12,6 +13,13 @@ function VerifyForm() {
     const [status, setStatus] = useState("idle"); // idle, loading, success, error
     const [message, setMessage] = useState("");
     const [resendCooldown, setResendCooldown] = useState(0);
+
+    // Auto-resend on warning redirect
+    useEffect(() => {
+        if (warnParam && email && resendCooldown === 0) {
+            handleResend();
+        }
+    }, [warnParam, email]);
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -29,7 +37,7 @@ function VerifyForm() {
             if (res.ok) {
                 setStatus("success");
                 setMessage("Verified! Redirecting...");
-                setTimeout(() => router.push("/login"), 2000);
+                setTimeout(() => router.push("/dashboard"), 2000);
             } else {
                 setStatus("error");
                 setMessage(data.error || "Invalid code");
@@ -49,7 +57,7 @@ function VerifyForm() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email }),
             });
-            setMessage("New code sent! Check console.");
+            setMessage("New code sent! Please check your inbox.");
             setResendCooldown(60);
             const timer = setInterval(() => {
                 setResendCooldown(prev => {
@@ -65,7 +73,13 @@ function VerifyForm() {
     return (
         <div className="bg-slate-800 p-8 rounded-2xl border border-slate-700 w-full max-w-md shadow-xl text-center">
             <h1 className="text-2xl font-bold text-white mb-2">Verify Email</h1>
-            <p className="text-slate-400 text-sm mb-6">Enter the 6-digit code sent to your email.</p>
+            {warnParam ? (
+                <p className="text-yellow-400 text-sm mb-6 font-bold bg-yellow-400/10 p-2 rounded">
+                    ⚠️ Please verify your email to access the dashboard.
+                </p>
+            ) : (
+                <p className="text-slate-400 text-sm mb-6">Enter the 6-digit code sent to your email.</p>
+            )}
 
             {message && (
                 <div className={`p-3 rounded-lg mb-4 text-sm font-bold ${status === "success" ? "bg-green-500/10 text-green-400" : "bg-indigo-500/10 text-indigo-400"}`}>
@@ -123,11 +137,16 @@ function VerifyForm() {
     );
 }
 
+import FloatingIcons from "@/components/FloatingIcons";
+
 export default function VerifyPage() {
     return (
-        <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
-            <Suspense fallback={<div className="text-white">Loading...</div>}>
-                <VerifyForm />
+        <div className="relative min-h-screen bg-slate-900 flex items-center justify-center p-4 overflow-hidden">
+            <FloatingIcons />
+            <Suspense fallback={<div className="text-white relative z-10">Loading...</div>}>
+                <div className="relative z-10 w-full max-w-md">
+                    <VerifyForm />
+                </div>
             </Suspense>
         </div>
     );
