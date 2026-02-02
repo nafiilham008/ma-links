@@ -73,7 +73,7 @@ export default function ProfileClient({ user, isPreview = false }) {
 
             {/* Ambient Effects */}
             {user.enableAmbient !== false && (
-                <AmbientBackground themeName={user.themePreset} />
+                <AmbientBackground themeName={user.themePreset} fixed={!isPreview} />
             )}
 
             <div className="w-full max-w-2xl flex flex-col items-center relative z-10">
