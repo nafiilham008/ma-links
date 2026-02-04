@@ -789,11 +789,11 @@ export default function UserDashboard({ user }) {
                                 <span className="bg-slate-800 text-slate-400 text-xs font-bold px-3 py-1 rounded-full border border-slate-700">LIVE PREVIEW</span>
                             </div>
                             <div className="mockup-phone border-slate-800 bg-slate-900 rounded-[3rem] border-[14px] overflow-hidden shadow-2xl w-full max-w-[320px] mx-auto aspect-[9/19] relative ring-1 ring-white/10">
-                                <div className="h-full w-full overflow-y-auto overflow-x-hidden no-scrollbar relative rounded-[2.5rem] bg-slate-900">
+                                <div className="h-full w-full overflow-hidden relative rounded-[2.5rem] bg-slate-900">
                                     {/* Interaction blocker - allows scroll but blocks clicks/zooms more reliably */}
                                     <div className="absolute inset-x-0 top-0 bottom-0 z-50 pointer-events-none"></div>
-                                    <div className="origin-top-left transition-transform duration-300 flex flex-col"
-                                        style={{ transform: 'scale(0.75)', minHeight: '133.33%', width: '133.33%' }}>
+                                    <div className="origin-top-left transition-transform duration-300 flex flex-col overflow-y-auto overflow-x-hidden no-scrollbar bg-slate-900"
+                                        style={{ transform: 'scale(0.75)', height: '133.33%', width: '133.33%' }}>
                                         <ProfileClient user={userForPreview} isPreview={true} />
                                     </div>
                                 </div>
