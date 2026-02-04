@@ -793,7 +793,7 @@ export default function UserDashboard({ user }) {
                                     {/* Interaction blocker - allows scroll but blocks clicks/zooms more reliably */}
                                     <div className="absolute inset-x-0 top-0 bottom-0 z-50 pointer-events-none"></div>
                                     <div className="origin-top-left transition-transform duration-300"
-                                        style={{ transform: 'scale(0.75)', height: '133.33%', width: '133.33%' }}>
+                                        style={{ transform: 'scale(0.75)', minHeight: '133.33%', width: '133.33%' }}>
                                         <ProfileClient user={userForPreview} isPreview={true} />
                                     </div>
                                 </div>
