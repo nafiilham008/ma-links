@@ -117,8 +117,8 @@ export default function ProfileClient({ user, isPreview = false }) {
                     {/* Social Icons */}
                     <div className="flex justify-center gap-4 mb-10">
                         {socialLinks.map(s => (
-                            <a key={s.id} href={s.url} target="_blank" rel="noopener noreferrer"
-                                className={`w-10 h-10 flex items-center justify-center ${currentTheme.cardBg} backdrop-blur-md rounded-full border ${currentTheme.cardBorder} hover:scale-110 hover:shadow-lg transition-all text-xl shadow-sm ${currentTheme.text}`}>
+                            <a key={s.id} href={isPreview ? undefined : s.url} target={isPreview ? undefined : "_blank"} rel="noopener noreferrer"
+                                className={`w-10 h-10 flex items-center justify-center ${currentTheme.cardBg} backdrop-blur-md rounded-full border ${currentTheme.cardBorder} hover:scale-110 hover:shadow-lg transition-all text-xl shadow-sm ${currentTheme.text} ${isPreview ? 'pointer-events-none opacity-80' : ''}`}>
                                 {s.icon}
                             </a>
                         ))}
