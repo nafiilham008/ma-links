@@ -55,7 +55,7 @@ export default function ProfileClient({ user, isPreview = false }) {
 
     return (
         <main
-            className={`${isPreview ? "min-h-full" : "min-h-screen"} w-full flex flex-col items-center py-12 px-4 sm:px-6 transition-all duration-500 relative overflow-hidden`}
+            className={`${isPreview ? "min-h-full flex-1" : "min-h-screen"} w-full flex flex-col items-center py-12 px-4 sm:px-6 transition-all duration-500 relative overflow-hidden`}
             style={
                 user.customBackground
                     ? {
