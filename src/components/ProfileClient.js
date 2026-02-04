@@ -135,7 +135,10 @@ export default function ProfileClient({ user, isPreview = false }) {
                             value={search}
                             onChange={e => setSearch(e.target.value)}
                             disabled={isPreview}
-                            className={`w-full ${currentTheme.cardBg} backdrop-blur-md border ${currentTheme.cardBorder} rounded-2xl py-3 pl-12 pr-4 ${currentTheme.text} placeholder-${currentTheme.text}/50 outline-none focus:ring-2 focus:ring-white/20 transition-all font-medium shadow-sm ${isPreview ? 'opacity-70 cursor-not-allowed' : ''}`}
+                            className={`w-full ${currentTheme.cardBg} backdrop-blur-md border ${currentTheme.cardBorder} ${user.buttonStyle === 'rounded' ? 'rounded-full' :
+                                    user.buttonStyle === 'soft' ? 'rounded-xl' :
+                                        'rounded-none' // box & brutalist
+                                } py-3 pl-12 pr-4 ${currentTheme.text} placeholder-${currentTheme.text}/50 outline-none focus:ring-2 focus:ring-white/20 transition-all font-medium shadow-sm ${isPreview ? 'opacity-70 cursor-not-allowed' : ''}`}
                         />
                     </div>
 
