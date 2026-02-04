@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { PlusIcon, TrashIcon, PencilIcon, ArrowTopRightOnSquareIcon, ArrowLeftOnRectangleIcon, ChevronDownIcon, SwatchIcon, UsersIcon, EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { themePresets, buttonStyles } from "@/lib/themes";
 import ProfileClient from "@/components/ProfileClient";
+import ImageCropper from "@/components/ImageCropper";
 import {
     IconSmartHome, IconCandy, IconMoodSmile, IconFlower,
     IconLeaf, IconHeart, IconRipple, IconSun,
@@ -24,7 +26,7 @@ export default function UserDashboard({ user }) {
     // --- State Initialization ---
     // Safe initialization using props or defaults
     const [profileData, setProfileData] = useState(user || {
-        bio: "", instagram: "", youtube: "", spotify: "", tiktok: "", email: "",
+        bio: "", instagram: "", facebook: "", youtube: "", spotify: "", tiktok: "", email: "", publicEmail: "",
         themePreset: "classic", buttonStyle: "rounded", role: "USER",
         name: "", username: "", views: 0, links: []
     });
@@ -55,6 +57,13 @@ export default function UserDashboard({ user }) {
     const [pendingUsername, setPendingUsername] = useState(user?.username || "");
     const [checkingUsername, setCheckingUsername] = useState(false);
     const [claimingUsername, setClaimingUsername] = useState(false);
+
+    // Cropper State
+    const [showCropper, setShowCropper] = useState(false);
+    const [tempImageSrc, setTempImageSrc] = useState(null);
+    const [cropAspect, setCropAspect] = useState(1);
+    const [croppingTarget, setCroppingTarget] = useState(null); // 'avatar', 'customBackground', 'link'
+
     const [confirmAction, setConfirmAction] = useState({ show: false, title: "", message: "", onConfirm: null, type: "danger" });
 
     const saveTimeoutRef = useRef(null);
@@ -147,7 +156,6 @@ export default function UserDashboard({ user }) {
             }
         } catch (error) {
             console.error("Failed to fetch links", error);
-            // Don't wipe links if fetch fails unless we really want to
         }
     }
 
@@ -160,21 +168,58 @@ export default function UserDashboard({ user }) {
     async function handleProfileUpload(e, field) {
         const file = e.target.files[0];
         if (!file) return;
-        const isBackground = field === 'customBackground';
-        const limitSize = isBackground ? 5 : 2;
-        if (file.size > limitSize * 1024 * 1024) {
-            showToast(`File too large (max ${limitSize}MB)`, "error");
-            return;
-        }
-        const formData = new FormData(); formData.append("file", file);
+
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+            setTempImageSrc(reader.result);
+            setCroppingTarget(field === 'avatar' ? 'avatar' : 'customBackground');
+            setCropAspect(field === 'avatar' ? 1 : 9 / 16);
+            setShowCropper(true);
+        };
+        e.target.value = null;
+    }
+
+    async function handleFileUpload(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+            setTempImageSrc(reader.result);
+            setCroppingTarget('link');
+            setCropAspect(1);
+            setShowCropper(true);
+        };
+        e.target.value = null;
+    }
+
+    async function handleCropSave(croppedBlob) {
         setUploadingProfile(true);
+        setShowCropper(false);
+        const formData = new FormData();
+        formData.append("file", croppedBlob, "image.jpg");
+
         try {
             const res = await fetch("/api/upload", { method: "POST", body: formData });
             if (!res.ok) throw new Error("Upload failed");
             const data = await res.json();
-            updateProfile({ [field]: data.url });
-            showToast("Image uploaded!");
-        } catch (error) { showToast("Upload failed", "error"); } finally { setUploadingProfile(false); }
+
+            if (croppingTarget === 'link') {
+                setFormData(prev => ({ ...prev, image: data.url }));
+                showToast("Link image updated!");
+            } else {
+                updateProfile({ [croppingTarget]: data.url });
+                showToast(`${croppingTarget === 'avatar' ? 'Profile' : 'Background'} updated!`);
+            }
+        } catch (error) {
+            showToast("Upload failed", "error");
+            console.error(error);
+        } finally {
+            setUploadingProfile(false);
+            setTempImageSrc(null);
+        }
     }
 
     async function handleSubmit(e) {
@@ -215,25 +260,8 @@ export default function UserDashboard({ user }) {
     // --- Handlers (Common) ---
     function handleAddNew() { setEditingLink(null); setFormData({ title: "", url: "", platform: "", category: "", image: "" }); setShowModal(true); }
     function handleEdit(link) { setEditingLink(link); setFormData({ title: link.title, url: link.url, platform: link.platform || "", category: link.category || "", image: link.image || "" }); setShowModal(true); }
-    async function handleFileUpload(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-        if (file.size > 2 * 1024 * 1024) {
-            showToast("File too large (max 2MB)", "error");
-            return;
-        }
-        setUploading(true);
-        const data = new FormData();
-        data.append("file", file);
-        try {
-            const res = await fetch("/api/upload", { method: "POST", body: data });
-            const json = await res.json();
-            if (json.url) setFormData(prev => ({ ...prev, image: json.url }));
-        } catch (error) { showToast("Upload failed", "error"); } finally { setUploading(false); }
-    }
 
     async function handlePasswordChange(e) {
-        // ... (rest of the function remains same, I'll just add the new function after it)
         e.preventDefault();
         if (passwordData.new.length < 6) { showToast("Password must be at least 6 chars", "error"); return; }
         if (passwordData.new !== passwordData.confirmNew) { showToast("Passwords do not match", "error"); return; }
@@ -296,9 +324,11 @@ export default function UserDashboard({ user }) {
             <nav className="border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 z-50">
                 <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
                     <div className="flex items-center gap-8">
-                        <h1 className="text-2xl font-bold tracking-tight text-white">
-                            <span className="text-indigo-500">ma-</span>links
-                        </h1>
+                        <Link href="/">
+                            <h1 className="text-2xl font-bold tracking-tight text-white cursor-pointer hover:opacity-80 transition-opacity">
+                                <span className="text-indigo-500">ma-</span>links
+                            </h1>
+                        </Link>
                         <div className="hidden md:flex gap-1">
                             {["links", "appearance", "settings"].map(tab => (
                                 <button
@@ -656,7 +686,7 @@ export default function UserDashboard({ user }) {
                                 <section className="bg-slate-800 p-6 rounded-2xl border border-slate-700">
                                     <h2 className="text-lg font-bold text-white mb-6">Social Icons</h2>
                                     <div className="grid grid-cols-1 gap-4">
-                                        {['instagram', 'youtube', 'spotify', 'tiktok'].map(platform => (
+                                        {['instagram', 'facebook', 'youtube', 'tiktok', 'spotify'].map(platform => (
                                             <div key={platform} className="relative">
                                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500 uppercase text-xs font-bold">
                                                     {platform}
@@ -666,12 +696,26 @@ export default function UserDashboard({ user }) {
                                                     value={profileData[platform] || ""}
                                                     onChange={e => updateProfile({ [platform]: e.target.value })}
                                                     className="w-full bg-slate-900 border border-slate-600 rounded-lg py-3 pl-28 pr-4 text-white focus:outline-none focus:border-indigo-500 font-mono text-sm"
-                                                    placeholder="Input username"
+                                                    placeholder={platform === 'facebook' ? "username or link" : "Input username"}
                                                 />
                                             </div>
                                         ))}
+                                        <div className="relative">
+                                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500 uppercase text-xs font-bold">
+                                                Contact Email
+                                            </div>
+                                            <input
+                                                type="text"
+                                                value={profileData.publicEmail || ""}
+                                                onChange={e => updateProfile({ publicEmail: e.target.value })}
+                                                className="w-full bg-slate-900 border border-slate-600 rounded-lg py-3 pl-28 pr-4 text-white focus:outline-none focus:border-indigo-500 font-mono text-sm"
+                                                placeholder="Public contact email"
+                                            />
+                                        </div>
                                     </div>
                                 </section>
+
+                                {/* --- Handlers (User) --- */}
 
                                 {profileData.provider !== 'google' && (
                                     <section className="bg-slate-800 p-6 rounded-2xl border border-slate-700">
@@ -744,8 +788,8 @@ export default function UserDashboard({ user }) {
                             <div className="text-center mb-4">
                                 <span className="bg-slate-800 text-slate-400 text-xs font-bold px-3 py-1 rounded-full border border-slate-700">LIVE PREVIEW</span>
                             </div>
-                            <div className="mockup-phone border-slate-800 bg-slate-900 rounded-[3rem] border-[14px] overflow-hidden shadow-2xl w-full max-w-[320px] mx-auto aspect-[9/19] relative">
-                                <div className="h-full w-full overflow-y-auto no-scrollbar relative">
+                            <div className="mockup-phone border-slate-800 bg-slate-900 rounded-[3rem] border-[14px] overflow-hidden shadow-2xl w-full max-w-[320px] mx-auto aspect-[9/19] relative ring-1 ring-white/10">
+                                <div className="h-full w-full overflow-y-auto no-scrollbar relative rounded-[2.5rem] bg-slate-900">
                                     {/* Interaction blocker - allows scroll but blocks clicks/zooms more reliably */}
                                     <div className="absolute inset-x-0 top-0 bottom-0 z-50 pointer-events-none"></div>
                                     <div className="origin-top-left transition-transform duration-300"
@@ -758,6 +802,16 @@ export default function UserDashboard({ user }) {
                     </div>
 
                 </div>
+
+                {/* Cropper Modal */}
+                {showCropper && tempImageSrc && (
+                    <ImageCropper
+                        imageSrc={tempImageSrc}
+                        cropAspect={cropAspect}
+                        onCancel={() => { setShowCropper(false); setTempImageSrc(null); }}
+                        onCropComplete={handleCropSave}
+                    />
+                )}
 
                 {/* Link Edit Modal */}
                 {showModal && (
@@ -773,6 +827,15 @@ export default function UserDashboard({ user }) {
                                         onChange={e => setFormData({ ...formData, title: e.target.value })}
                                         className="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 text-white focus:border-indigo-500 outline-none"
                                         placeholder="e.g. My Website"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-slate-400 text-xs font-bold uppercase mb-1">Platform (Optional)</label>
+                                    <input
+                                        value={formData.platform}
+                                        onChange={e => setFormData({ ...formData, platform: e.target.value })}
+                                        className="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 text-white focus:border-indigo-500 outline-none"
+                                        placeholder="e.g. YouTube, Shopee, Tokopedia"
                                     />
                                 </div>
                                 <div>

@@ -25,10 +25,12 @@ model User {
   avatar    String?  // URL to uploaded file
   bio       String?
   instagram String?
+  facebook  String? // New
   youtube   String?
   spotify   String?
   tiktok    String?
   email     String?
+  publicEmail String? // New
   themePreset String @default("classic") // classic, cotton-candy, midnight-neon
   buttonStyle String @default("rounded") // rounded, box, soft, brutalist
   customBackground String? // URL to uploaded custom background

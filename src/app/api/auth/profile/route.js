@@ -16,10 +16,12 @@ export async function GET(request) {
             select: {
                 bio: true,
                 instagram: true,
+                facebook: true,
                 youtube: true,
                 spotify: true,
                 tiktok: true,
                 email: true,
+                publicEmail: true,
                 themePreset: true,
                 buttonStyle: true,
                 avatar: true,
@@ -75,7 +77,7 @@ export async function PUT(request) {
 
     try {
         const body = await request.json().catch(() => ({}));
-        const { username, bio, instagram, youtube, spotify, tiktok, email, themePreset, buttonStyle, avatar, customBackground, enableAmbient, name } = body;
+        const { username, bio, instagram, facebook, youtube, spotify, tiktok, email, publicEmail, themePreset, buttonStyle, avatar, customBackground, enableAmbient, name } = body;
 
         const user = await prisma.user.findUnique({
             where: { id: parseInt(userId) }
@@ -86,12 +88,14 @@ export async function PUT(request) {
         }
 
         const updateData = {
-            bio: bio ? bio.substring(0, 80) : null,
+            bio: bio ? bio.substring(0, 150) : null,
             instagram: instagram || null,
+            facebook: facebook || null,
             youtube: youtube || null,
             spotify: spotify || null,
             tiktok: tiktok || null,
             email: email || null,
+            publicEmail: publicEmail || null,
             themePreset: themePreset || "classic",
             buttonStyle: buttonStyle || "rounded",
             avatar: avatar || null,

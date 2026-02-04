@@ -5,7 +5,7 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { themePresets, buttonStyles } from "@/lib/themes";
 
 import {
-    IconBrandInstagram, IconBrandYoutube, IconBrandSpotify, IconBrandTiktok, IconMail,
+    IconBrandInstagram, IconBrandYoutube, IconBrandSpotify, IconBrandTiktok, IconMail, IconBrandFacebook,
     IconSmartHome, IconCandy, IconMoodSmile, IconFlower,
     IconLeaf, IconHeart, IconRipple, IconSun,
     IconBolt, IconTrees, IconMoon, IconCloud,
@@ -46,10 +46,11 @@ export default function ProfileClient({ user, isPreview = false }) {
 
     const socialLinks = [
         { id: 'instagram', icon: <IconBrandInstagram className="w-5 h-5" />, url: user.instagram ? `https://instagram.com/${user.instagram}` : null },
+        { id: 'facebook', icon: <IconBrandFacebook className="w-5 h-5" />, url: user.facebook ? (user.facebook.includes('http') ? user.facebook : `https://facebook.com/${user.facebook}`) : null },
         { id: 'youtube', icon: <IconBrandYoutube className="w-5 h-5" />, url: user.youtube ? `https://youtube.com/@${user.youtube}` : null },
         { id: 'spotify', icon: <IconBrandSpotify className="w-5 h-5" />, url: user.spotify ? `https://open.spotify.com/user/${user.spotify}` : null },
         { id: 'tiktok', icon: <IconBrandTiktok className="w-5 h-5" />, url: user.tiktok ? `https://tiktok.com/@${user.tiktok}` : null },
-        { id: 'email', icon: <IconMail className="w-5 h-5" />, url: user.email ? `mailto:${user.email}` : null },
+        { id: 'email', icon: <IconMail className="w-5 h-5" />, url: user.publicEmail ? `mailto:${user.publicEmail}` : null },
     ].filter(s => s.url);
 
     return (
@@ -134,7 +135,8 @@ export default function ProfileClient({ user, isPreview = false }) {
                             placeholder="Search items or categories..."
                             value={search}
                             onChange={e => setSearch(e.target.value)}
-                            className={`w-full ${currentTheme.cardBg} backdrop-blur-md border ${currentTheme.cardBorder} rounded-2xl py-3 pl-12 pr-4 ${currentTheme.text} placeholder-${currentTheme.text}/50 outline-none focus:ring-2 focus:ring-white/20 transition-all font-medium shadow-sm`}
+                            disabled={isPreview}
+                            className={`w-full ${currentTheme.cardBg} backdrop-blur-md border ${currentTheme.cardBorder} rounded-2xl py-3 pl-12 pr-4 ${currentTheme.text} placeholder-${currentTheme.text}/50 outline-none focus:ring-2 focus:ring-white/20 transition-all font-medium shadow-sm ${isPreview ? 'opacity-70 cursor-not-allowed' : ''}`}
                         />
                     </div>
 
@@ -143,11 +145,12 @@ export default function ProfileClient({ user, isPreview = false }) {
                             {categories.map(cat => (
                                 <button
                                     key={cat}
-                                    onClick={() => setSelectedCategory(cat)}
+                                    onClick={() => !isPreview && setSelectedCategory(cat)}
+                                    disabled={isPreview}
                                     className={`px-6 py-2.5 font-bold whitespace-nowrap transition-all border shadow-sm ${buttonStyles[currentButtonStyle] === "rounded-full" ? "rounded-full" : (buttonStyles[currentButtonStyle] || "rounded-lg")} ${selectedCategory === cat
                                         ? `${currentTheme.text} bg-white/20 border-white/40 scale-105 shadow-md`
                                         : `${currentTheme.text} opacity-60 hover:opacity-100 border-transparent hover:bg-white/10`
-                                        }`}
+                                        } ${isPreview ? 'cursor-not-allowed' : ''}`}
                                 >
                                     {cat}
                                 </button>

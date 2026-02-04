@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
+import { ArrowTopRightOnSquareIcon, ShoppingBagIcon } from "@heroicons/react/24/outline";
 
 import { buttonStyles } from "@/lib/themes";
 
@@ -62,7 +62,11 @@ export default function LinkCard({ link, theme, buttonStyle, isPreview = false }
                             <img src={link.image} alt="" className="w-full h-full object-cover transition-transform duration-700 group-hover/image:scale-110" />
                         ) : (
                             <div className="w-full h-full flex items-center justify-center text-slate-400 bg-slate-50">
-                                <span className="text-xl font-bold">{(link.title || "?").charAt(0).toUpperCase()}</span>
+                                {['shopee', 'tokopedia', 'lazada', 'tiktok shop', 'shop'].some(p => (link.platform || "").toLowerCase().includes(p)) ? (
+                                    <ShoppingBagIcon className="w-8 h-8 opacity-50" />
+                                ) : (
+                                    <span className="text-xl font-bold">{(link.title || "?").charAt(0).toUpperCase()}</span>
+                                )}
                             </div>
                         )}
 
