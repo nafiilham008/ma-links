@@ -55,17 +55,16 @@ export default function ProfileClient({ user, isPreview = false }) {
 
     return (
         <main
-            className={`${isPreview ? "min-h-full flex-1" : "min-h-screen"} w-full flex flex-col items-center py-12 px-4 sm:px-6 transition-all duration-500 relative overflow-hidden`}
-            style={
-                user.customBackground
-                    ? {
-                        backgroundImage: `url(${user.customBackground})`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                        backgroundAttachment: "fixed"
-                    }
-                    : {}
-            }
+            className={`${isPreview ? "flex-1" : ""} w-full flex flex-col items-center py-12 px-4 sm:px-6 transition-all duration-500 relative overflow-hidden`}
+            style={{
+                ...(user.customBackground ? {
+                    backgroundImage: `url(${user.customBackground})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    backgroundAttachment: isPreview ? "scroll" : "fixed"
+                } : {}),
+                minHeight: isPreview ? "100%" : "100vh"
+            }}
         >
             {/* Background Gradient fallback if no custom BG */}
             {!user.customBackground && (
