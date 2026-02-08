@@ -34,6 +34,8 @@ export async function GET(request) {
                 views: true,
                 role: true,
                 emailVerified: true,
+                isPremium: true,
+                purchasedThemes: true,
             }
         });
 

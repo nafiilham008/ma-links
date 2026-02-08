@@ -36,6 +36,8 @@ model User {
   customBackground String? // URL to uploaded custom background
   enableAmbient Boolean @default(true) // Toggle for floating effects
   usernameChanged Boolean @default(false)
+  isPremium       Boolean  @default(false)
+  purchasedThemes String[] @default([]) // Array of theme IDs
   links     Link[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

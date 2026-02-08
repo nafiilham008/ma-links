@@ -167,6 +167,67 @@ export const themePresets = {
         cardBorder: "border-violet-900",
         buttonHover: "hover:bg-violet-900/50",
         accent: "text-violet-400"
+    },
+    // --- PREMIUM THEMES ---
+    "trusted-seller": {
+        name: "Trusted Seller",
+        category: "Premium",
+        icon: "IconDiscountCheck",
+        bg: "bg-white",
+        text: "text-slate-900",
+        cardBg: "bg-white",
+        cardBorder: "border-blue-600/20 shadow-sm",
+        buttonHover: "hover:bg-slate-50",
+        accent: "text-blue-600",
+        isPremium: true
+    },
+    "soft-aesthetic": {
+        name: "Soft Aesthetic",
+        category: "Premium",
+        icon: "IconCloud",
+        bg: "bg-gradient-to-br from-pink-50 via-white to-blue-50 animate-gradient",
+        text: "text-slate-700",
+        cardBg: "bg-white/40 backdrop-blur-md",
+        cardBorder: "border-white/60",
+        buttonHover: "hover:bg-white/60",
+        accent: "text-pink-400",
+        isPremium: true
+    },
+    "rgb-gamer": {
+        name: "RGB Gamer",
+        category: "Premium",
+        icon: "IconDeviceGamepad",
+        bg: "bg-neutral-950",
+        text: "text-white",
+        cardBg: "bg-black/80",
+        cardBorder: "border-transparent animate-border-rgb relative",
+        buttonHover: "hover:bg-neutral-900",
+        accent: "text-white shadow-[0_0_10px_rgba(255,255,255,0.5)]",
+        isPremium: true
+    },
+    "nusantara-batik": {
+        name: "Nusantara",
+        category: "Premium",
+        icon: "IconMapPin",
+        bg: "bg-[#2c1810]",
+        text: "text-[#fef3c7]",
+        cardBg: "bg-[#fef3c7]/90",
+        cardBorder: "border-[#78350f]",
+        buttonHover: "hover:bg-[#fef3c7]",
+        accent: "text-[#d97706]",
+        isPremium: true
+    },
+    "yummy-pop": {
+        name: "Yummy Pop",
+        category: "Premium",
+        icon: "IconIceCream",
+        bg: "bg-[#fef9c3]",
+        text: "text-slate-900",
+        cardBg: "bg-white",
+        cardBorder: "border-b-4 border-r-4 border-black rounded-xl",
+        buttonHover: "hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none hover:border-b-2 hover:border-r-2",
+        accent: "text-pink-500",
+        isPremium: true
     }
 };
 

@@ -248,6 +248,16 @@
         -ms-overflow-style: none;
         scrollbar-width: none;
     }
+
+    @keyframes progress {
+        from {
+            transform: scaleX(0);
+        }
+
+        to {
+            transform: scaleX(1);
+        }
+    }
 }
 
 /* Custom Base Styles */

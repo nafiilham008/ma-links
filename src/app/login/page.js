@@ -11,6 +11,21 @@ export default function Login() {
     const router = useRouter();
 
 
+    // Proactive check: Redirect to dashboard if session exists
+    useEffect(() => {
+        const checkSession = async () => {
+            try {
+                const res = await fetch("/api/auth/profile");
+                if (res.ok) {
+                    router.replace("/dashboard");
+                }
+            } catch (err) {
+                // Not logged in or error, stay on page
+            }
+        };
+        checkSession();
+    }, [router]);
+
     // Google Auth Implementation
     useEffect(() => {
         /* global google */
@@ -42,8 +57,8 @@ export default function Login() {
             const data = await res.json();
 
             if (res.ok && data.success) {
-                // Always redirect to dashboard, the dashboard page will handle role-based rendering
-                router.push("/dashboard");
+                // Use replace to prevent back button from returning to login
+                router.replace("/dashboard");
             } else {
                 setError("Google Sign-In failed");
             }
@@ -67,8 +82,8 @@ export default function Login() {
             const data = await res.json();
 
             if (res.ok) {
-                // Always redirect to dashboard
-                router.push("/dashboard");
+                // Use replace to prevent back button from returning to login
+                router.replace("/dashboard");
             } else {
                 setError(data.error || "Login failed");
             }

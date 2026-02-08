@@ -134,6 +134,7 @@ export default async function Home() {
                 </div>
             </section>
 
+
             {/* Features Grid */}
             <section className="bg-slate-800/30 py-24 px-6 border-y border-slate-800/50 relative overflow-hidden">
                 <div className="max-w-6xl mx-auto relative z-10">

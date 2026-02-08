@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { PlusIcon, TrashIcon, PencilIcon, ArrowTopRightOnSquareIcon, ArrowLeftOnRectangleIcon, ChevronDownIcon, SwatchIcon, UsersIcon, EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+import { PlusIcon, TrashIcon, PencilIcon, ArrowTopRightOnSquareIcon, ArrowLeftOnRectangleIcon, ChevronDownIcon, SwatchIcon, UsersIcon, EyeIcon, EyeSlashIcon, LockClosedIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { themePresets, buttonStyles } from "@/lib/themes";
@@ -9,7 +9,8 @@ import {
     IconSmartHome, IconCandy, IconMoodSmile, IconFlower,
     IconLeaf, IconHeart, IconRipple, IconSun,
     IconBolt, IconTrees, IconMoon, IconCloud,
-    IconLemon2, IconCoffee
+    IconLemon2, IconCoffee, IconDiscountCheck, IconDeviceGamepad,
+    IconMapPin, IconIceCream
 } from "@tabler/icons-react";
 
 // Helper to map icon names to components
@@ -17,7 +18,8 @@ const ThemeIcons = {
     IconSmartHome, IconCandy, IconMoodSmile, IconFlower,
     IconLeaf, IconHeart, IconRipple, IconSun,
     IconBolt, IconTrees, IconMoon, IconCloud,
-    IconLemon2, IconCoffee
+    IconLemon2, IconCoffee, IconDiscountCheck, IconDeviceGamepad,
+    IconMapPin, IconIceCream
 };
 
 export default function UserDashboard({ user }) {
@@ -57,6 +59,22 @@ export default function UserDashboard({ user }) {
     const [pendingUsername, setPendingUsername] = useState(user?.username || "");
     const [checkingUsername, setCheckingUsername] = useState(false);
     const [claimingUsername, setClaimingUsername] = useState(false);
+
+    const [toastFading, setToastFading] = useState(false);
+
+    // Auto-dismiss toast
+    useEffect(() => {
+        if (toast.show) {
+            setToastFading(false);
+            const timer = setTimeout(() => {
+                setToastFading(true);
+                setTimeout(() => {
+                    setToast(prev => ({ ...prev, show: false }));
+                }, 500);
+            }, 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [toast.show]);
 
     // Cropper State
     const [showCropper, setShowCropper] = useState(false);
@@ -588,11 +606,26 @@ export default function UserDashboard({ user }) {
                                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                                                     {themes.map((theme) => {
                                                         const IconComponent = theme.icon ? ThemeIcons[theme.icon] : null;
+
+                                                        // Premium Logic
+                                                        const isPremium = theme.isPremium;
+                                                        const isPurchased = profileData.purchasedThemes?.includes(theme.key) || profileData.isPremium; // or check specific ownership
+                                                        const isLocked = isPremium && !isPurchased;
+
                                                         return (
                                                             <button
                                                                 key={theme.key}
-                                                                onClick={() => updateProfile({ themePreset: theme.key })}
-                                                                className={`relative aspect-[3/4] rounded-xl overflow-hidden border-2 transition-all group ${profileData.themePreset === theme.key ? "border-indigo-500 scale-105 shadow-xl shadow-indigo-500/20" : "border-slate-700 hover:border-slate-500"}`}
+                                                                onClick={() => {
+                                                                    if (isLocked) {
+                                                                        setToast({ show: true, message: "🔒 Premium Theme! Upgrade to unlock.", type: "error" });
+                                                                        return;
+                                                                    }
+                                                                    updateProfile({ themePreset: theme.key });
+                                                                }}
+                                                                className={`relative aspect-[3/4] rounded-xl overflow-hidden border-2 transition-all group 
+                                                                    ${profileData.themePreset === theme.key ? "border-indigo-500 scale-105 shadow-xl shadow-indigo-500/20" : "border-slate-700 hover:border-slate-500"}
+                                                                    ${isLocked ? "opacity-75 grayscale-[0.5]" : ""}
+                                                                `}
                                                             >
                                                                 <div className={`absolute inset-0 ${theme.bg}`}></div>
 
@@ -607,6 +640,16 @@ export default function UserDashboard({ user }) {
                                                                         <div className={`w-1/2 h-1.5 rounded-full ${theme.cardBg} border ${theme.cardBorder}`}></div>
                                                                     </div>
                                                                 </div>
+
+                                                                {/* Lock Overlay */}
+                                                                {isLocked && (
+                                                                    <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center p-4 backdrop-blur-[1px] z-10">
+                                                                        <div className="bg-slate-900/90 text-amber-400 p-2 rounded-full shadow-lg mb-2">
+                                                                            <LockClosedIcon className="w-5 h-5" />
+                                                                        </div>
+                                                                        <span className="text-[10px] font-bold text-white bg-indigo-600 px-2 py-0.5 rounded-full uppercase tracking-wider">Premium</span>
+                                                                    </div>
+                                                                )}
 
                                                                 <div className="absolute bottom-0 w-full bg-black/60 p-2 text-center text-[10px] font-bold text-white backdrop-blur-md border-t border-white/5">
                                                                     {theme.name}
@@ -927,8 +970,8 @@ export default function UserDashboard({ user }) {
 
                 {/* Toast Notification */}
                 {toast.show && (
-                    <div className={`fixed bottom-4 right-4 px-6 py-4 rounded-xl shadow-2xl text-white font-bold animate-slide-up z-[80] ${toast.type === "error" ? "bg-red-500" : "bg-emerald-500"}`}>
-                        {toast.message}
+                    <div className={`fixed bottom-4 right-4 px-6 py-4 rounded-xl shadow-2xl text-white font-bold z-[80] overflow-hidden transition-all duration-300 ${toastFading ? 'opacity-0 translate-y-2' : 'animate-slide-up opacity-100'} ${toast.type === "error" ? "bg-red-500" : "bg-emerald-500"}`}>
+                        <div className="relative z-10">{toast.message}</div>
                     </div>
                 )}
             </main>

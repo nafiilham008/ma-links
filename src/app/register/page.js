@@ -18,6 +18,21 @@ export default function Register() {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const router = useRouter();
 
+    // Proactive check: Redirect to dashboard if session exists
+    useEffect(() => {
+        const checkSession = async () => {
+            try {
+                const res = await fetch("/api/auth/profile");
+                if (res.ok) {
+                    router.replace("/dashboard");
+                }
+            } catch (err) {
+                // Not logged in or error, stay on page
+            }
+        };
+        checkSession();
+    }, [router]);
+
     // Google Auth Implementation
     useEffect(() => {
         /* global google */
@@ -47,7 +62,7 @@ export default function Register() {
                 body: JSON.stringify({ credential: response.credential }),
             });
             if (res.ok) {
-                router.push("/dashboard");
+                router.replace("/dashboard");
             } else {
                 setError("Google Sign-In failed");
             }

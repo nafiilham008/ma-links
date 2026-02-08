@@ -17,15 +17,29 @@ export async function middleware(request) {
         pathname.startsWith("/api/admin");
 
     // Routes that are for guests only (redirect to dashboard if logged in)
-    const isGuestRoute = pathname === "/login" || pathname === "/register";
+    const isGuestRoute = pathname === "/login" ||
+        pathname === "/register" ||
+        pathname === "/forgot-password" ||
+        pathname.startsWith("/reset-password");
 
     if (isGuestRoute && token) {
         try {
             await jwtVerify(token, JWT_SECRET);
-            return NextResponse.redirect(new URL("/dashboard", request.url));
+            const response = NextResponse.redirect(new URL("/dashboard", request.url));
+            // Prevent caching so the browser always hits the middleware even on back button
+            response.headers.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+            response.headers.set("Pragma", "no-cache");
+            response.headers.set("Expires", "0");
+            return response;
         } catch (e) {
-            // Invalid token, let them stay on login/register (middleware wil likely strip invalid token in a real app, but here we just ignore)
+            // Invalid token, let them stay on login/register
         }
+    }
+
+    if (isGuestRoute) {
+        const response = NextResponse.next();
+        response.headers.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+        return response;
     }
 
     if (isProtectedRoute) {
