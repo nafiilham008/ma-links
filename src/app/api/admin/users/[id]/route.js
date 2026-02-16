@@ -40,7 +40,7 @@ export async function PATCH(request, { params }) {
     const userId = request.headers.get("x-user-id");
     const targetUserId = parseInt((await params).id);
     const body = await request.json();
-    const { name, username } = body;
+    const { name, username, isPremium } = body;
 
     if (!userId) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -70,7 +70,8 @@ export async function PATCH(request, { params }) {
             where: { id: targetUserId },
             data: {
                 name: name !== undefined ? name : undefined,
-                username: username !== undefined ? username : undefined
+                username: username !== undefined ? username : undefined,
+                isPremium: isPremium !== undefined ? isPremium : undefined
             }
         });
 

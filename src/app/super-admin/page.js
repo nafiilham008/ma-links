@@ -91,6 +91,27 @@ export default function SuperAdminPage() {
         }
     }
 
+    async function handleTogglePremium(user) {
+        try {
+            const newStatus = !user.isPremium;
+            const res = await fetch(`/api/admin/users/${user.id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ isPremium: newStatus })
+            });
+
+            if (res.ok) {
+                showToast(`User ${newStatus ? 'upgraded to Premium' : 'downgraded to Free'}`);
+                fetchStats();
+            } else {
+                const err = await res.json();
+                showToast(err.error || "Failed to update premium status", "error");
+            }
+        } catch (err) {
+            showToast("Connection error", "error");
+        }
+    }
+
     if (loading) return <div className="min-h-screen bg-slate-900 text-white flex items-center justify-center">Loading Admin Dashboard...</div>;
 
     if (error) return (
@@ -155,6 +176,7 @@ export default function SuperAdminPage() {
                                     <th className="px-6 py-4">Status</th>
                                     <th className="px-6 py-4">Stats</th>
                                     <th className="px-6 py-4">Role</th>
+                                    <th className="px-6 py-4">Type</th>
                                     <th className="px-6 py-4">Joined</th>
                                     <th className="px-6 py-4 text-right">Actions</th>
                                 </tr>
@@ -194,6 +216,17 @@ export default function SuperAdminPage() {
                                             <span className={`text-xs font-bold uppercase p-1 rounded ${user.role === 'ADMIN' || user.role === 'super admin' ? 'text-red-400 bg-red-400/10' : 'text-slate-500'}`}>
                                                 {user.role}
                                             </span>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <button
+                                                onClick={() => handleTogglePremium(user)}
+                                                className={`text-xs font-bold px-2 py-1 rounded border transition-all ${user.isPremium
+                                                    ? 'bg-amber-500/10 text-amber-500 border-amber-500/30 hover:bg-amber-500/20'
+                                                    : 'bg-slate-700 text-slate-400 border-slate-600 hover:bg-slate-600'
+                                                    }`}
+                                            >
+                                                {user.isPremium ? '👑 PREMIUM' : 'FREE'}
+                                            </button>
                                         </td>
                                         <td className="px-6 py-4 text-slate-400 font-mono text-xs">
                                             {new Date(user.createdAt).toLocaleDateString()}

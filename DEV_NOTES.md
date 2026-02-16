@@ -1,95 +1,120 @@
 # 🛠️ ma-links Developer Notes & Guide
 
-Dokumentasi teknis untuk pengembangan dan pemeliharaan aplikasi **ma-links**.
-
-## 1. Cara Menjalankan Aplikasi (Dari Awal)
-Jika kamu baru saja meng-clone project ini, ikuti langkah berikut:
-
-```bash
-# 1. Install semua Library yang dibutuhkan
-npm install
-
-# 2. Sinkronisasi Database (SQLite)
-npx prisma db push
-
-# 3. Generate Database Client (Wajib setiap ada perubahan skema)
-npx prisma generate
-
-# 4. Jalankan Server Development
-npm run dev
-```
-
-## 2. Persyaratan Sistem (Requirements)
-- **Node.js**: Versi 18 ke atas (Direkomendasikan v20+).
-- **Editor**: VS Code dengan ekstensi Tailwind CSS & Prisma (opsional tapi disarankan).
-- **Database**: SQLite (Sudah include, tidak perlu install server DB terpisah).
-
-## 3. Konfigurasi Environment (.env)
-File `.env` sangat penting dan **TIDAK** boleh hilang. 
-> **Catatan**: Salinan cadangan file ini sudah saya simpan di: `backups/config/.env.example`
-
-**Isi file .env:**
-```env
-DATABASE_URL="file:./dev.db" # Lokasi penyimpanan database
-JWT_SECRET="isi-dengan-kunci-rahasia-bebas" # Untuk keamanan login
-```
-
-## 4. Cara Update Fungsi / Aplikasi
-Jika kamu ingin menambah fitur atau mengubah kode:
-1. **Frontend**: Ubah file di `src/app/` atau `src/components/`.
-2. **API**: Ubah file di `src/app/api/`.
-3. **Database**: Jika menambah kolom baru di database, ubah file `prisma/schema.prisma`, lalu jalankan:
-   ```bash
-   npx prisma db push
-   npx prisma generate
-   ```
-   *(Pastikan server `npm run dev` dimatikan dulu saat menjalankan perintah di atas untuk menghindari file locking)*.
-
-## 5. Cara Push ke GitHub
-Untuk memperbarui repository di GitHub:
-
-```bash
-# 1. Cek file apa saja yang berubah
-git status
-
-# 2. Tambahkan semua perubahan
-git add .
-
-# 3. Beri catatan perubahan (Commit)
-git commit -m "feat: premium landing page overhaul and theme polishing"
-
-# 4. Kirim ke GitHub
-# Gunakan branch 'master' atau 'main' sesuai yang tertera di repository
-git push origin master
-# Jika error branch mismatch, coba: git push origin main
-```
-
-## 6. Pandora Box: Panduan Kustomisasi Tema 🎨
-Sistem tema di ma-links dirancang secara modular. Berikut adalah file-file yang saling berkaitan jika kamu ingin mengubah atau menambah tema baru:
-
-### 📂 File 1: `src/lib/themes.js` (Pusat Data Tema)
-Ini adalah "otak" dari semua pilihan tema.
-- **Apa yang disetting?**: Warna background (`bg`), warna kartu (`cardBg`), warna border (`cardBorder`), warna teks (`text`), dan ikon tema (`icon`).
-- **Cara Tambah**: Tambahkan objek baru ke dalam variable `themePresets`. Pastikan class CSS-nya tersedia di Tailwind.
-
-### 📂 File 2: `src/components/AmbientBackground.js` (Efek Animasi)
-Ini mengatur "benda melayang" (emoji/partikel) sesuai tema.
-- **Apa yang disetting?**: List emoji yang muncul untuk setiap tema (`themeEmojis`).
-- **Cara Tambah**: Tambahkan key tema baru ke dalam `themeEmojis` dan masukkan array emoji yang sesuai (misal: Lemon untuk tema Lemon Sorbet).
-
-### 📂 File 3: `src/components/ProfileClient.js` (Rendering Frontend)
-Halaman profil yang dilihat oleh pengunjung/user.
-- **Relasi**: File ini mengambil data dari `themes.js` dan mengirimkan `themeName` ke `AmbientBackground.js`.
-- **Kustomisasi**: Jika ingin mengubah layout profil secara keseluruhan.
-
-### 📂 File 4: `src/app/globals.css` (Animasi & Glow)
-Tempat semua animasi "berat" berada.
-- **Isi Penting**: Keyframes untuk `.animate-orb` (glow orbs di landing page), `.animate-shimmer` (tombol berkilau), dan `.reveal-up` (efek scroll).
-
-## 7. Troubleshooting Umum
-- **Error: Unknown field**: Jalankan `npx prisma generate` lalu restart server.
-- **Database Locked**: Matikan terminal yang menjalankan `npm run dev`, jalankan command prisma, lalu nyalakan lagi.
-- **UI Gak Berubah**: Pastikan Tailwind JIT sedang jalan (server dev aktif) dan cek apakah class yang kamu pakai sudah benar penulisan/tipenya di `globals.css` atau `themes.js`.
+Dokumentasi teknis lengkap untuk pengembangan, pemeliharaan, dan deployment aplikasi **ma-links**.
 
 ---
-**ma-links** | Developed with Love by Nafi Ilham
+
+## 🚀 1. Alur Pengembangan (Workflow)
+Jika kamu baru saja meng-clone project ini atau ingin memulai coding:
+
+### A. Setup Awal (Local)
+1.  **Install Library**:
+    ```bash
+    npm install
+    ```
+2.  **Setup Database (SQLite)**:
+    ```bash
+    npx prisma db push
+    npx prisma generate
+    ```
+3.  **Jalankan Server Development**:
+    ```bash
+    npm run dev
+    ```
+
+### B. Konfigurasi Environment (`.env`)
+File `.env` wajib ada. Jangan commit file ini ke repo publik.
+```env
+# Local Development (SQLite)
+DATABASE_URL="file:./dev.db"
+JWT_SECRET="rahasia-banget-bro-ganti-ya"
+
+# Google Auth (Opsional di Local)
+NEXT_PUBLIC_GOOGLE_CLIENT_ID="..."
+```
+
+---
+
+## 📦 2. Cara Update & Push ke GitHub
+Setiap kali selesai mengedit kode atau menambah fitur:
+
+1.  **Cek Status & Add File**:
+    ```bash
+    git status
+    git add .
+    ```
+2.  **Commit Perubahan**:
+    ```bash
+    git commit -m "feat: deskripsi singkat perubahanmu"
+    ```
+3.  **Push ke Repository**:
+    ```bash
+    git push origin master
+    # Catatan: Branch utama kita adalah 'master'
+    ```
+
+---
+
+## 🌐 3. Tutorial Deploy ke Production (VPS)
+Panduan langkah demi langkah untuk mengupdate aplikasi di server production.
+
+### A. Persiapan SSH Key
+Pastikan kamu memiliki file kunci SSH (`id_ed25519`) yang sesuai.
+*   **Lokasi Key**: `../warung-ibu-pintar/deploy-keys/id_ed25519` (relatif dari folder project ini).
+*   **IP Server**: `202.155.95.238`
+*   **User**: `root`
+
+### B. Perintah Deploy (Satu Baris)
+Jalankan perintah ini dari terminal lokal kamu (Git Bash / Terminal) untuk mengupdate server secara otomatis:
+
+```bash
+ssh -i ../warung-ibu-pintar/deploy-keys/id_ed25519 -o StrictHostKeyChecking=no root@202.155.95.238 "cd /var/www/ma-links && git fetch --all && git reset --hard origin/master && npm install && npx prisma generate && npx prisma db push && npm run build && pm2 restart ma-links"
+```
+
+**Penjelasan Perintah:**
+1.  `ssh ...`: Masuk ke server dengan kunci khusus.
+2.  `cd /var/www/ma-links`: Masuk ke folder aplikasi.
+3.  `git fetch --all && git reset --hard ...`: **PENTING!** Memaksa kode di server sama persis dengan GitHub (menimpa perubahan manual di server).
+4.  `npm install`: Update library baru jika ada.
+5.  `npx prisma ...`: Update struktur database production.
+6.  `npm run build`: Build ulang aplikasi Next.js.
+7.  `pm2 restart ma-links`: Restart proses aplikasi agar perubahan aktif.
+
+### C. Cek Status Aplikasi di Server
+Jika ingin masuk ke server untuk mengecek log atau status:
+```bash
+# Login ke Server
+ssh -i ../warung-ibu-pintar/deploy-keys/id_ed25519 root@202.155.95.238
+
+# Cek Status PM2
+pm2 status
+
+# Cek Log Error
+pm2 logs ma-links
+```
+
+---
+
+## 🎨 4. Panduan Kustomisasi Tema
+Lokasi file penting untuk mengubah tampilan:
+
+*   **Data Tema**: `src/lib/themes.js` (Warna, Icon, Preset).
+*   **Animasi Background**: `src/components/AmbientBackground.js` (Emoji melayang).
+*   **Tampilan Profil**: `src/components/ProfileClient.js`.
+*   **Global CSS**: `src/app/globals.css` (Animasi shimmer, glow, dll).
+
+---
+
+## 🔧 5. Troubleshooting
+*   **Error "Remote Host Identification Changed"**:
+    Jalankan command ini di terminal lokal untuk reset fingerprint:
+    ```bash
+    ssh-keygen -R 202.155.95.238
+    ```
+*   **Database Error setelah Deploy**:
+    Pastikan `npx prisma db push` sukses. Cek log dengan `pm2 logs`.
+*   **Gambar Tidak Muncul**:
+    Pastikan folder `public/uploads` di server memiliki permission yang benar (`chmod 755`).
+
+---
+*Updated: Feb 8, 2026*

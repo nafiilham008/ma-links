@@ -474,8 +474,8 @@ export default function UserDashboard({ user }) {
                         {/* --- TAB: APPEARANCE --- */}
                         {activeTab === "appearance" && (
                             <div className="space-y-8">
-                                {/* Username Section (Only for Google users who haven't changed yet) */}
-                                {profileData.provider === 'google' && !profileData.usernameChanged && (
+                                {/* Username Section (One-time change for all users) */}
+                                {!profileData.usernameChanged && (
                                     <div className="bg-indigo-500/10 border border-indigo-500/20 rounded-2xl p-6 mb-2">
                                         <div className="flex items-center gap-3 mb-4">
                                             <div className="w-10 h-10 rounded-full bg-indigo-500/20 flex items-center justify-center text-indigo-400">
@@ -483,7 +483,7 @@ export default function UserDashboard({ user }) {
                                             </div>
                                             <div>
                                                 <h3 className="text-white font-bold text-sm">Claim Your Unique Username!</h3>
-                                                <p className="text-indigo-300/60 text-[10px]">Google login grants you a one-time username change.</p>
+                                                <p className="text-indigo-300/60 text-[10px]">You can change your username once.</p>
                                             </div>
                                         </div>
                                         <div className="space-y-3">
@@ -522,7 +522,7 @@ export default function UserDashboard({ user }) {
                                     </div>
                                 )}
 
-                                {profileData.provider === 'google' && profileData.usernameChanged && (
+                                {profileData.usernameChanged && (
                                     <div className="bg-slate-800/50 border border-slate-700/50 rounded-2xl p-4 mb-2 flex items-center gap-3 opacity-60 italic">
                                         <UsersIcon className="w-5 h-5 text-slate-500" />
                                         <span className="text-slate-400 text-[10px]">Your username: <strong>@{profileData.username}</strong> (Username changed once)</span>

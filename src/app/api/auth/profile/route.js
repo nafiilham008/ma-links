@@ -106,9 +106,8 @@ export async function PUT(request) {
             name: name || null,
         };
 
-        // Handle username change for Google users (only once)
         if (username && username !== user.username) {
-            if (user.provider !== 'google' || user.usernameChanged) {
+            if (user.usernameChanged) {
                 return NextResponse.json({ error: "Username change not allowed" }, { status: 403 });
             }
 

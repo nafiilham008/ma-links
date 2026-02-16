@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Wedding of Adam & Hawa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'rose-pink': '#FFE4E6',
+                        'dusty-pink': '#FDA4AF',
+                        'sage-green': '#D1FAE5',
+                        'deep-green': '#064E3B',
+                        'soft-white': '#FAFAFA',
+                    },
+                    fontFamily: {
+                        'serif': ['"Playfair Display"', 'serif'],
+                        'script': ['"Alex Brush"', 'cursive'],
+                        'sans': ['"Montserrat"', 'sans-serif'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'sway': 'sway 4s ease-in-out infinite alternate',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        sway: {
+                            '0%': { transform: 'rotate(-5deg)' },
+                            '100%': { transform: 'rotate(5deg)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #FAFAFA;
+            color: #4A4A4A;
+            overflow-x: hidden;
+        }
+
+        .flower-decoration {
+            position: absolute;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 1s ease-out;
+        }
+
+        .reveal-on-scroll.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #FDA4AF;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body class="font-sans antialiased text-gray-700">
+
+    <!-- AUDIO PLAYER -->
+    <div class="fixed top-5 right-5 z-50">
+        <button id="music-btn" onclick="toggleAudio()"
+            class="bg-white/80 backdrop-blur text-dusty-pink p-3 rounded-full shadow-lg border border-rose-pink hover:bg-rose-pink hover:text-white transition-all ring-2 ring-white">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 animate-spin-slow" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2z" />
+            </svg>
+        </button>
+    </div>
+
+    <!-- HERO SECTION -->
+    <section class="min-h-screen relative flex items-center justify-center overflow-hidden">
+        <!-- Background Image with Overlay -->
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1520854221250-858f27615202?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80"
+                class="w-full h-full object-cover" alt="Wedding Floral Background">
+            <div class="absolute inset-0 bg-white/40 backdrop-blur-[2px]"></div>
+            <div class="absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-white"></div>
+        </div>
+
+        <!-- Floating Flowers (CSS Decorations) -->
+        <div class="flower-decoration top-0 left-0 w-48 md:w-64 opacity-80 animate-sway origin-top-left">
+            <img src="https://clipart-library.com/images_k/watercolor-flowers-transparent-background/watercolor-flowers-transparent-background-12.png"
+                alt="Flower Decor">
+        </div>
+        <div class="flower-decoration bottom-0 right-0 w-48 md:w-64 opacity-80 animate-sway origin-bottom-right"
+            style="animation-delay: 1s;">
+            <img src="https://clipart-library.com/images_k/watercolor-flowers-transparent-background/watercolor-flowers-transparent-background-12.png"
+                alt="Flower Decor" class="transform rotate-180">
+        </div>
+
+        <!-- Content -->
+        <div class="relative z-20 text-center px-4" id="hero-content">
+            <p class="font-sans tracking-[0.2em] text-gray-600 uppercase mb-4 animate-float">The Wedding Of</p>
+            <h1 class="font-script text-7xl md:text-9xl text-gray-800 mb-2 drop-shadow-sm">
+                Adam <span class="text-dusty-pink">&</span> Hawa
+            </h1>
+            <p class="font-serif italic text-xl md:text-2xl mt-6 text-gray-700">Minggu, 28 Februari 2026</p>
+
+            <div class="mt-10">
+                <button onclick="document.getElementById('welcome').scrollIntoView({behavior: 'smooth'})"
+                    class="bg-rose-pink/80 hover:bg-dusty-pink text-gray-800 font-serif italic py-3 px-8 rounded-full shadow-lg transition-all transform hover:scale-105 hover:shadow-xl border border-white">
+                    Buka Undangan
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- WELCOME / AYAT SECTION -->
+    <section id="welcome" class="py-20 px-6 bg-white relative overflow-hidden">
+        <div class="max-w-2xl mx-auto text-center reveal-on-scroll">
+            <img src="https://clipart-library.com/images_k/floral-divider-transparent/floral-divider-transparent-17.png"
+                class="h-16 mx-auto mb-6 opacity-60" alt="Divider">
+            <p class="font-serif italic text-lg md:text-xl text-gray-600 leading-loose">
+                "Dan di antara tanda-tanda (kebesaran)-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu
+                sendiri, agar kamu cenderung dan merasa tenteram kepadanya, dan Dia menjadikan di antaramu rasa kasih
+                dan sayang."
+            </p>
+            <p class="mt-4 font-bold text-dusty-pink font-sans text-sm tracking-widest">(QS. Ar-Rum: 21)</p>
+        </div>
+    </section>
+
+    <!-- COUPLE / MEMPELAI SECTION -->
+    <section class="py-24 bg-rose-pink/20 relative">
+        <div class="container mx-auto px-4">
+            <h2 class="text-center font-serif text-4xl md:text-5xl mb-16 text-gray-800 reveal-on-scroll">Mempelai</h2>
+
+            <div class="flex flex-col md:flex-row justify-center items-center gap-12 max-w-5xl mx-auto">
+
+                <!-- GROOM -->
+                <div class="text-center reveal-on-scroll delay-100">
+                    <div class="relative w-64 h-64 mx-auto mb-6 group">
+                        <div
+                            class="absolute inset-0 rounded-full border-4 border-white shadow-xl overflow-hidden transform group-hover:scale-105 transition-transform duration-500">
+                            <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+                                alt="Groom" class="w-full h-full object-cover">
+                        </div>
+                        <!-- Floral Circle Decoration -->
+                        <div class="absolute -inset-4 border border-dusty-pink rounded-full animate-spin-slow opacity-50 pointer-events-none"
+                            style="animation-duration: 20s;"></div>
+                    </div>
+                    <h3 class="font-script text-4xl text-gray-800 mb-1">Adam Pratama</h3>
+                    <p class="font-sans text-sm text-gray-500 mb-2">Putra Bpk. Ibrahim & Ibu Sarah</p>
+                    <a href="https://instagram.com" target="_blank"
+                        class="inline-block text-dusty-pink hover:text-gray-600 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="feather feather-instagram">
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                        </svg>
+                    </a>
+                </div>
+
+                <div class="font-script text-6xl text-dusty-pink reveal-on-scroll">&</div>
+
+                <!-- BRIDE -->
+                <div class="text-center reveal-on-scroll delay-200">
+                    <div class="relative w-64 h-64 mx-auto mb-6 group">
+                        <div
+                            class="absolute inset-0 rounded-full border-4 border-white shadow-xl overflow-hidden transform group-hover:scale-105 transition-transform duration-500">
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+                                alt="Bride" class="w-full h-full object-cover">
+                        </div>
+                        <div class="absolute -inset-4 border border-dusty-pink rounded-full animate-spin-slow opacity-50 pointer-events-none"
+                            style="animation-duration: 25s; animation-direction: reverse;"></div>
+                    </div>
+                    <h3 class="font-script text-4xl text-gray-800 mb-1">Hawa Khadijah</h3>
+                    <p class="font-sans text-sm text-gray-500 mb-2">Putri Bpk. Muhammad & Ibu Aisyah</p>
+                    <a href="https://instagram.com" target="_blank"
+                        class="inline-block text-dusty-pink hover:text-gray-600 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="feather feather-instagram">
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                        </svg>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- EVENTS / ACARA SECTION -->
+    <section class="py-24 px-4 bg-white relative">
+        <!-- Background Flower -->
+        <img src="https://clipart-library.com/images_k/peony-transparent-background/peony-transparent-background-11.png"
+            class="absolute top-0 right-0 w-64 opacity-10 pointer-events-none" alt="bg-flower">
+
+        <div class="container mx-auto max-w-4xl">
+            <h2 class="text-center font-serif text-4xl mb-16 text-gray-800 reveal-on-scroll">Rangkaian Acara</h2>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- AKAD CARD -->
+                <div
+                    class="bg-gradient-to-br from-rose-pink/10 to-transparent p-8 rounded-2xl border border-rose-pink/30 shadow-sm text-center transform hover:-translate-y-2 transition duration-500 reveal-on-scroll">
+                    <div
+                        class="bg-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 shadow-md text-dusty-pink">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <h3 class="font-serif text-2xl font-bold text-gray-800 mb-2">Akad Nikah</h3>
+                    <p class="font-script text-xl text-dusty-pink mb-4">Minggu, 28 Februari 2026</p>
+                    <div class="text-gray-600 space-y-2 font-sans text-sm">
+                        <p><strong>Pukul:</strong> 08:00 WIB - Selesai</p>
+                        <p><strong>Lokasi:</strong> Masjid Raya Bogor</p>
+                        <p class="italic text-gray-400">Jl. KH. Abdullah Bin Nuh</p>
+                    </div>
+                    <a href="https://maps.google.com" target="_blank"
+                        class="inline-block mt-6 px-6 py-2 bg-white border border-dusty-pink text-dusty-pink rounded-full text-xs font-bold uppercase tracking-wider hover:bg-dusty-pink hover:text-white transition">Maps</a>
+                </div>
+
+                <!-- RESEPSI CARD -->
+                <div
+                    class="bg-gradient-to-bl from-rose-pink/10 to-transparent p-8 rounded-2xl border border-rose-pink/30 shadow-sm text-center transform hover:-translate-y-2 transition duration-500 reveal-on-scroll delay-100">
+                    <div
+                        class="bg-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 shadow-md text-dusty-pink">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                        </svg>
+                    </div>
+                    <h3 class="font-serif text-2xl font-bold text-gray-800 mb-2">Resepsi</h3>
+                    <p class="font-script text-xl text-dusty-pink mb-4">Minggu, 28 Februari 2026</p>
+                    <div class="text-gray-600 space-y-2 font-sans text-sm">
+                        <p><strong>Pukul:</strong> 11:00 - 14:00 WIB</p>
+                        <p><strong>Lokasi:</strong> Braja Mustika Hotel</p>
+                        <p class="italic text-gray-400">Grand Ballroom - Lantai 2</p>
+                    </div>
+                    <a href="https://maps.google.com" target="_blank"
+                        class="inline-block mt-6 px-6 py-2 bg-white border border-dusty-pink text-dusty-pink rounded-full text-xs font-bold uppercase tracking-wider hover:bg-dusty-pink hover:text-white transition">Maps</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- GALLERY SECTION -->
+    <section class="py-20 bg-rose-pink/10">
+        <div class="container mx-auto px-4">
+            <h2 class="text-center font-serif text-3xl mb-10 text-gray-800 reveal-on-scroll">Momen Kebahagiaan</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto">
+                <div
+                    class="aspect-square rounded-xl overflow-hidden shadow-md cursor-pointer hover:opacity-90 transition reveal-on-scroll text-center delay-0">
+                    <img src="https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                        class="w-full h-full object-cover">
+                </div>
+                <div
+                    class="aspect-square rounded-xl overflow-hidden shadow-md cursor-pointer hover:opacity-90 transition reveal-on-scroll text-center delay-100">
+                    <img src="https://images.unsplash.com/photo-1511285560982-1351cdeb9821?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                        class="w-full h-full object-cover">
+                </div>
+                <div
+                    class="aspect-square rounded-xl overflow-hidden shadow-md cursor-pointer hover:opacity-90 transition reveal-on-scroll text-center delay-200">
+                    <img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                        class="w-full h-full object-cover">
+                </div>
+                <div
+                    class="aspect-square rounded-xl overflow-hidden shadow-md cursor-pointer hover:opacity-90 transition reveal-on-scroll text-center delay-300">
+                    <img src="https://images.unsplash.com/photo-1549419409-f62f8546f197?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                        class="w-full h-full object-cover">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- RSVP SECTION -->
+    <section class="py-24 px-4 bg-white relative">
+        <div
+            class="max-w-xl mx-auto bg-white/80 backdrop-blur-lg border border-rose-pink/50 rounded-3xl shadow-2xl p-8 md:p-12 reveal-on-scroll">
+            <div class="text-center mb-8">
+                <h2 class="font-serif text-3xl text-gray-800 mb-2">Konfirmasi Kehadiran</h2>
+                <p class="font-sans text-gray-500 text-sm">Mohon konfirmasi kehadiran Anda sebelum 20 Februari 2026</p>
+            </div>
+
+            <form onsubmit="submitRSVP(event)" class="space-y-6">
+                <div>
+                    <label class="block font-sans text-xs font-bold uppercase text-gray-400 mb-2">Nama</label>
+                    <input type="text"
+                        class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-dusty-pink/50 transition"
+                        placeholder="Nama Lengkap">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-sans text-xs font-bold uppercase text-gray-400 mb-2">Hadir</label>
+                        <select
+                            class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-dusty-pink/50 transition">
+                            <option>Ya, Hadir</option>
+                            <option>Maaf, Tidak</option>
+                            <option>Masih Ragu</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-sans text-xs font-bold uppercase text-gray-400 mb-2">Jumlah</label>
+                        <select
+                            class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-dusty-pink/50 transition">
+                            <option>1 Orang</option>
+                            <option>2 Orang</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-sans text-xs font-bold uppercase text-gray-400 mb-2">Pesan</label>
+                    <textarea
+                        class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-dusty-pink/50 transition h-24"
+                        placeholder="Tulis ucapan..."></textarea>
+                </div>
+
+                <button type="submit"
+                    class="w-full bg-dusty-pink text-white font-bold py-4 rounded-xl shadow-lg hover:bg-red-300 transition-transform transform hover:-translate-y-1">
+                    Kirim Konfirmasi
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-rose-pink/20 py-10 text-center">
+        <h3 class="font-script text-3xl text-gray-600 mb-2">Adam & Hawa</h3>
+        <p class="text-xs text-gray-400 font-sans tracking-widest uppercase">The Beginning of Forever</p>
+    </footer>
+
+    <!-- AUDIO -->
+    <audio id="bg-audio" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        const audio = document.getElementById('bg-audio');
+        let isPlaying = false;
+
+        function toggleAudio() {
+            if (isPlaying) {
+                audio.pause();
+                document.getElementById('music-btn').classList.remove('animate-pulse');
+            } else {
+                audio.play();
+                document.getElementById('music-btn').classList.add('animate-pulse');
+            }
+            isPlaying = !isPlaying;
+        }
+
+        function submitRSVP(e) {
+            e.preventDefault();
+            alert("Terima kasih atas konfirmasinya! Kami menantikan kehadiran Anda.");
+            toggleAudio(); // Just a trick to ensure interaction starts audio context if not yet started
+        }
+
+        // Scroll Reveal Animation Script
+        document.addEventListener('DOMContentLoaded', () => {
+            const reveals = document.querySelectorAll('.reveal-on-scroll');
+
+            const revealOnScroll = () => {
+                const windowHeight = window.innerHeight;
+                const elementVisible = 150;
+
+                reveals.forEach((reveal) => {
+                    const elementTop = reveal.getBoundingClientRect().top;
+                    if (elementTop < windowHeight - elementVisible) {
+                        reveal.classList.add('active');
+                    } else {
+                        reveal.classList.remove('active'); // Optional: remove to re-animate
+                    }
+                });
+            }
+
+            window.addEventListener('scroll', revealOnScroll);
+            // Trigger once on load
+            revealOnScroll();
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wedding of Cinta & Rangga - KAI Ticket</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Barcode Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Barcode+128&display=swap" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
+
+        body {
+            background-color: #E0E0E0;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        /* KAI Colors */
+        .kai-orange {
+            background-color: #F37021;
+        }
+
+        .kai-blue {
+            background-color: #005C9F;
+        }
+
+        .text-kai-blue {
+            color: #005C9F;
+        }
+
+        .text-kai-orange {
+            color: #F37021;
+        }
+
+        .barcode {
+            font-family: 'Libre Barcode 128', cursive;
+        }
+
+        .ticket-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06), 0 0 20px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Running Text Animation */
+        .marquee-container {
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 15s linear infinite;
+        }
+
+        @keyframes marquee {
+            0% {
+                transform: translateX(100%);
+            }
+
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <!-- AUDIO PLAYER -->
+    <div class="fixed top-4 right-4 z-50">
+        <button id="music-btn" onclick="toggleAudio()"
+            class="kai-blue text-white p-3 rounded-full shadow-lg border-2 border-white hover:bg-orange-500 transition">
+            <i class="fas fa-volume-up"></i>
+        </button>
+    </div>
+
+    <!-- MAIN CRADLE -->
+    <div class="w-full max-w-md bg-white rounded-lg ticket-shadow overflow-hidden relative">
+
+        <!-- HEADER KAI STYLE -->
+        <div class="bg-white p-4 border-b-4 border-orange-500 flex justify-between items-end relative overflow-hidden">
+            <!-- Background Logo Pattern -->
+            <i class="fas fa-train absolute -right-4 -bottom-4 text-gray-100 text-8xl transform rotate-12"></i>
+
+            <div class="flex items-center gap-3 z-10">
+                <!-- LOGO MOCKUP -->
+                <div class="flex gap-1 items-end">
+                    <div class="w-2 h-6 kai-orange skew-x-12"></div>
+                    <div class="w-2 h-8 kai-blue skew-x-12"></div>
+                    <div class="text-2xl font-black italic text-kai-blue tracking-tighter ml-1">Wedding<span
+                            class="text-kai-orange">Access</span></div>
+                </div>
+            </div>
+
+            <div class="text-right z-10">
+                <p class="text-xs text-gray-500 font-bold uppercase">Kode Booking</p>
+                <p class="text-xl font-black text-kai-orange tracking-widest">CINTA26</p>
+            </div>
+        </div>
+
+        <!-- BOARDING PASS LABEL -->
+        <div class="kai-blue py-1 px-4">
+            <div class="marquee-container text-white text-xs font-bold uppercase tracking-wide">
+                <div class="marquee-content">
+                    Boarding Pass • Boarding Pass • Boarding Pass • Boarding Pass • Tiket Harap Disimpan • Tunjukkan
+                    Identitas Saat Boarding
+                </div>
+            </div>
+        </div>
+
+        <!-- TICKET CONTENT -->
+        <div class="p-4 space-y-4">
+
+            <!-- TRAIN INFO -->
+            <div class="flex justify-between items-start">
+                <div>
+                    <p class="text-[10px] text-gray-400 font-bold uppercase">Nama Kereta / Train</p>
+                    <p class="text-lg font-bold text-kai-blue">ARGO ASMARA (726)</p>
+                    <p class="text-xs text-gray-500 font-bold">Eksekutif Class</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-[10px] text-gray-400 font-bold uppercase">Tanggal / Date</p>
+                    <p class="text-lg font-bold text-gray-800">14 FEB 2026</p>
+                </div>
+            </div>
+
+            <!-- ROUTE INFO (STATIONS) -->
+            <div class="bg-blue-50 rounded-lg p-3 border border-blue-100 flex items-center justify-between">
+                <div class="text-center w-1/3">
+                    <p class="text-2xl font-black text-kai-blue">SGL</p>
+                    <p class="text-[10px] text-gray-500 font-bold uppercase">Stasiun Jomblo</p>
+                    <p class="text-sm font-bold text-kai-orange">08.00 WIB</p>
+                </div>
+
+                <div class="flex-1 text-center text-gray-300">
+                    <i class="fas fa-arrow-right text-xl"></i>
+                </div>
+
+                <div class="text-center w-1/3">
+                    <p class="text-2xl font-black text-kai-blue">MRD</p>
+                    <p class="text-[10px] text-gray-500 font-bold uppercase">Stasiun Halal</p>
+                    <p class="text-sm font-bold text-kai-orange">11.00 WIB</p>
+                </div>
+            </div>
+
+            <!-- PASSENGER DETAILS -->
+            <div class="border-t border-dashed border-gray-300 pt-4 grid grid-cols-2 gap-4">
+                <div class="col-span-2">
+                    <p class="text-[10px] text-gray-400 font-bold uppercase">Nama Penumpang / Name</p>
+                    <p class="text-lg font-bold text-gray-800 uppercase">TAMU UNDANGAN YANG TERHORMAT</p>
+                </div>
+                <div>
+                    <p class="text-[10px] text-gray-400 font-bold uppercase">Tipe Penumpang / Type</p>
+                    <p class="text-sm font-bold text-gray-800">Dewasa / Adult</p>
+                </div>
+                <div>
+                    <p class="text-[10px] text-gray-400 font-bold uppercase">No. Identitas / ID Number</p>
+                    <p class="text-sm font-bold text-gray-800">VIP-GUEST</p>
+                </div>
+                <div>
+                    <p class="text-[10px] text-gray-400 font-bold uppercase">Tempat Duduk / Seat</p>
+                    <p class="text-xl font-black text-kai-orange">PREMIUM</p>
+                </div>
+                <div>
+                    <p class="text-[10px] text-gray-400 font-bold uppercase">Gerbong / Wagon</p>
+                    <p class="text-xl font-black text-kai-blue">PELAMINAN 1</p>
+                </div>
+            </div>
+
+            <!-- COUPLE "Check In" -->
+            <div class="bg-gray-100 p-3 rounded flex items-center gap-3">
+                <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80"
+                    class="w-12 h-12 rounded bg-gray-300 object-cover grayscale">
+                <div>
+                    <p class="text-xs font-bold text-gray-500">Mempelai / The Couple</p>
+                    <p class="font-bold text-kai-blue">Cinta & Rangga</p>
+                </div>
+                <div class="ml-auto">
+                    <div
+                        class="border-2 border-green-500 text-green-500 px-2 py-0.5 text-[10px] font-bold uppercase rounded transform -rotate-12">
+                        Confirmed
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- FOOTER / QR CODE -->
+        <div class="bg-gray-50 p-6 border-t border-gray-200 text-center">
+
+            <div class="bg-white p-2 inline-block rounded shadow mb-4">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Wedding-Cinta-Rangga"
+                    class="w-32 h-32 opacity-80">
+            </div>
+
+            <p class="text-xs text-gray-500 mb-4">Tunjukkan QR Code ini kepada petugas saat memasuki gedung acara
+                resepsi pernikahan.</p>
+
+            <button onclick="toggleSheet()"
+                class="w-full kai-orange hover:bg-orange-600 text-white font-bold py-3 rounded shadow transition transform hover:-translate-y-1">
+                KONFIRMASI KEHADIRAN (CHECK-IN)
+            </button>
+
+            <p class="barcode text-6xl opacity-20 mt-4 overflow-hidden h-12">12345678901234567890</p>
+        </div>
+
+    </div>
+
+    <!-- RSVP SHEET MOCKUP (Check-in Kiosk Style) -->
+    <div id="checkin-sheet" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded w-full max-w-sm overflow-hidden relative shadow-2xl">
+            <div class="kai-blue p-4 flex justify-between items-center text-white">
+                <h2 class="font-bold">Cetak Tiket Mandiri (RSVP)</h2>
+                <button onclick="toggleSheet()"><i class="fas fa-times"></i></button>
+            </div>
+
+            <div class="p-6 space-y-4">
+                <div class="text-center mb-4">
+                    <p class="text-gray-500 text-sm">Silakan masukkan data diri Anda untuk mencetak Boarding Pass.</p>
+                </div>
+
+                <form onsubmit="submitCheckIn(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 mb-1">KODE BOOKING (NAMA)</label>
+                        <input type="text"
+                            class="w-full border-2 border-gray-300 rounded p-2 focus:border-orange-500 focus:outline-none uppercase font-bold text-gray-700 placeholder-gray-300"
+                            placeholder="MASUKKAN NAMA ANDA">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 mb-1">JUMLAH PENUMPANG</label>
+                        <select
+                            class="w-full border-2 border-gray-300 rounded p-2 focus:border-orange-500 focus:outline-none font-bold text-gray-700">
+                            <option>1 Orang (Sendiri)</option>
+                            <option>2 Orang (Berdua)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 mb-1">UCAPAN</label>
+                        <textarea
+                            class="w-full border-2 border-gray-300 rounded p-2 focus:border-orange-500 focus:outline-none font-bold text-gray-700 h-20 text-sm"
+                            placeholder="Tulis ucapan..."></textarea>
+                    </div>
+
+                    <button class="w-full kai-blue hover:bg-blue-700 text-white font-bold py-3 rounded shadow mt-4">
+                        CETAK (KIRIM)
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- AUDIO -->
+    <audio id="bg-audio" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        const audio = document.getElementById('bg-audio');
+        let isPlaying = false;
+
+        function toggleAudio() {
+            if (isPlaying) {
+                audio.pause();
+                document.getElementById('music-btn').innerHTML = '<i class="fas fa-volume-mute"></i>';
+            } else {
+                audio.play();
+                document.getElementById('music-btn').innerHTML = '<i class="fas fa-volume-up"></i>';
+            }
+            isPlaying = !isPlaying;
+        }
+
+        function toggleSheet() {
+            document.getElementById('checkin-sheet').classList.toggle('hidden');
+        }
+
+        function submitCheckIn(e) {
+            e.preventDefault();
+            alert("Check-in Berhasil! Silakan simpan Boarding Pass Anda.");
+            toggleSheet();
+        }
+    </script>
+</body>
+
+</html>

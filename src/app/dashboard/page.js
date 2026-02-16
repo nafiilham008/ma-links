@@ -152,6 +152,27 @@ export default function Dashboard() {
         }
     }
 
+    async function handleTogglePremium(user) {
+        try {
+            const newStatus = !user.isPremium;
+            const res = await fetch(`/api/admin/users/${user.id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ isPremium: newStatus })
+            });
+
+            if (res.ok) {
+                showToast(`User ${newStatus ? 'upgraded to Premium' : 'downgraded to Free'}`);
+                fetchAllUsers(pagination.page, pagination.limit);
+            } else {
+                const err = await res.json();
+                showToast(err.error || "Failed to update premium status", "error");
+            }
+        } catch (err) {
+            showToast("Connection error", "error");
+        }
+    }
+
     async function handleLogout() {
         await fetch("/api/auth/logout", { method: "POST" });
         router.push("/login");
@@ -359,6 +380,7 @@ export default function Dashboard() {
                                             <th className="px-6 py-4">User</th>
                                             <th className="px-6 py-4">Email</th>
                                             <th className="px-6 py-4">Role</th>
+                                            <th className="px-6 py-4">Type</th>
                                             <th className="px-6 py-4">Links</th>
                                             <th className="px-6 py-4">Views</th>
                                             <th className="px-6 py-4">Joined</th>
@@ -367,9 +389,9 @@ export default function Dashboard() {
                                     </thead>
                                     <tbody className="divide-y divide-slate-700">
                                         {loadingUsers ? (
-                                            <tr><td colSpan="6" className="px-6 py-8 text-center text-slate-500">Loading users...</td></tr>
+                                            <tr><td colSpan="8" className="px-6 py-8 text-center text-slate-500">Loading users...</td></tr>
                                         ) : allUsers.length === 0 ? (
-                                            <tr><td colSpan="6" className="px-6 py-8 text-center text-slate-500">No users found.</td></tr>
+                                            <tr><td colSpan="8" className="px-6 py-8 text-center text-slate-500">No users found.</td></tr>
                                         ) : (
                                             allUsers.map((user) => (
                                                 <tr key={user.id} className="hover:bg-slate-700/50 transition-colors group">
@@ -384,6 +406,17 @@ export default function Dashboard() {
                                                     <td className="px-6 py-4 text-slate-300">{user.email}</td>
                                                     <td className="px-6 py-4">
                                                         <span className={`text-xs font-bold uppercase ${user.role === 'super admin' ? 'text-red-400' : 'text-slate-500'}`}>{user.role}</span>
+                                                    </td>
+                                                    <td className="px-6 py-4">
+                                                        <button
+                                                            onClick={() => handleTogglePremium(user)}
+                                                            className={`text-xs font-bold px-2 py-1 rounded border transition-all ${user.isPremium
+                                                                ? 'bg-amber-500/10 text-amber-500 border-amber-500/30 hover:bg-amber-500/20'
+                                                                : 'bg-slate-700 text-slate-400 border-slate-600 hover:bg-slate-600'
+                                                                }`}
+                                                        >
+                                                            {user.isPremium ? '👑 PREMIUM' : 'FREE'}
+                                                        </button>
                                                     </td>
                                                     <td className="px-6 py-4 text-slate-300">{user._count?.links || 0}</td>
                                                     <td className="px-6 py-4 text-slate-300">{user.views}</td>

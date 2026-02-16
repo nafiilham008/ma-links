@@ -12,8 +12,14 @@ export async function POST(request) {
         const body = await request.json();
         const { username, password } = body;
 
-        const user = await prisma.user.findUnique({
-            where: { username },
+        // Allow login with username OR email
+        const user = await prisma.user.findFirst({
+            where: {
+                OR: [
+                    { username: username },
+                    { email: username } // Creating a flexible login
+                ]
+            }
         });
 
         if (!user || !(await bcrypt.compare(password, user.password))) {

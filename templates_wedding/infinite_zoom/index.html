@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Wedding of Leo & Virgo - Infinite Journey</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Great+Vibes&family=Lato:wght@300;400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #000;
+            font-family: 'Lato', sans-serif;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        #camera {
+            width: 100vw;
+            height: 100vh;
+            transform-origin: center center;
+            transition: transform 2.5s cubic-bezier(0.25, 1, 0.5, 1);
+            will-change: transform;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .layer {
+            position: absolute;
+            background-size: cover;
+            background-position: center;
+            overflow: visible;
+        }
+
+        .heading-font {
+            font-family: 'Cinzel', serif;
+        }
+
+        .script-font {
+            font-family: 'Great Vibes', cursive;
+        }
+
+        /* LAYER 1: OPENING (Sky/Mountain) */
+        #layer-1 {
+            width: 100vw;
+            height: 100vh;
+            background-image: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            z-index: 10;
+        }
+
+        /* LAYER 2: COUPLE (Cabin/House) */
+        /* Placed in the "valley" of Layer 1 */
+        #layer-2 {
+            width: 25vw;
+            height: 25vh;
+            /* Aspect ratio of a house */
+            top: 60%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            /* Centered */
+            z-index: 20;
+            background-image: url('https://images.unsplash.com/photo-1518780664697-55e3ad937233?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+            border-radius: 5px;
+        }
+
+        /* LAYER 3: DOA/PRAYER (Window/Room) */
+        /* Placed inside the "window" of the house in Layer 2 */
+        #layer-3 {
+            width: 6vw;
+            height: 6vw;
+            top: 40%;
+            left: 50%;
+            /* Center window */
+            transform: translateX(-50%);
+            z-index: 30;
+            background-image: url('https://images.unsplash.com/photo-1544947950-fa07a98d237f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80');
+            /* Book on table */
+            border: 1px solid #333;
+        }
+
+        /* LAYER 4: EVENTS (The Book Page) */
+        /* Placed on the book in Layer 3 */
+        #layer-4 {
+            width: 2.5vw;
+            height: 3.5vw;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 40;
+            background-color: #fff;
+            /* Paper page */
+            background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png');
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+            padding: 0.1vw;
+        }
+
+        /* LAYER 5: RSVP (The Stamp/Card) */
+        #layer-5 {
+            width: 2vw;
+            /* Fills Layer 4 container roughly */
+            height: 1vw;
+            top: 80%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 50;
+            background: #D4AF37;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.2vw;
+            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .text-overlay {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+            pointer-events: none;
+            /* Let clicks pass through to layer */
+        }
+
+        .pulse-hint {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="camera">
+
+        <!-- LEVEL 1: OPENING -->
+        <div id="layer-1" class="layer" onclick="zoomTo(2)">
+            <div class="text-overlay top-20">
+                <p class="tracking-[0.5em] text-sm md:text-xl uppercase mb-4">The Wedding Of</p>
+                <h1 class="heading-font text-6xl md:text-9xl mb-8">Leo & Virgo</h1>
+                <div
+                    class="inline-block border border-white px-6 py-2 rounded-full text-sm uppercase tracking-widest pulse-hint cursor-pointer pointer-events-auto hover:bg-white hover:text-black">
+                    Start Journey (Tap House)
+                </div>
+            </div>
+
+            <!-- LEVEL 2: COUPLE -->
+            <div id="layer-2" class="layer group" onclick="event.stopPropagation(); zoomTo(3)">
+                <div class="absolute inset-0 bg-black/30 group-hover:bg-transparent transition"></div>
+                <!-- Content shown when zoomed near -->
+                <div class="text-overlay top-1/2 transform -translate-y-1/2 opacity-0 transition-opacity duration-1000"
+                    id="text-2">
+                    <h2 class="script-font text-[2vw] text-[#D4AF37]">The Happy Couple</h2>
+                    <div class="flex justify-center gap-[2vw] text-[0.8vw] mt-[1vw]">
+                        <div>
+                            <p class="font-bold">Leo Alexander</p>
+                            <p class="text-[0.5vw]">Son of Mr. & Mrs. X</p>
+                        </div>
+                        <div>
+                            <p class="font-bold">Virgo Anastasia</p>
+                            <p class="text-[0.5vw]">Daughter of Mr. & Mrs. Y</p>
+                        </div>
+                    </div>
+                    <div class="mt-[5vw] text-[0.5vw] uppercase tracking-widest pulse-hint">Tap the Window</div>
+                </div>
+
+                <!-- LEVEL 3: DOA -->
+                <div id="layer-3" class="layer group" onclick="event.stopPropagation(); zoomTo(4)">
+                    <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition"></div>
+                    <div class="text-overlay top-1/2 transform -translate-y-1/2 opacity-0 transition-opacity duration-1000"
+                        id="text-3">
+                        <p class="script-font text-[0.8vw] mb-[0.2vw]">"Dan di antara tanda-tanda kebesaran-Nya..."</p>
+                        <p class="text-[0.3vw] font-bold">QS. Ar-Rum: 21</p>
+                        <div class="mt-[2vw] text-[0.2vw] uppercase tracking-widest pulse-hint">Tap the Book</div>
+                    </div>
+
+                    <!-- LEVEL 4: EVENTS -->
+                    <div id="layer-4" class="layer text-black group" onclick="event.stopPropagation();">
+                        <div class="opacity-0 transition-opacity duration-1000 flex flex-col items-center w-full h-full"
+                            id="text-4">
+                            <h3
+                                class="heading-font text-[0.3vw] text-[#D4AF37] font-bold border-b border-[#D4AF37] mb-[0.1vw]">
+                                Save The Date</h3>
+                            <p class="text-[0.2vw] font-bold">Minggu, 24 Mei 2026</p>
+
+                            <div class="flex justify-between w-full px-[0.2vw] mt-[0.1vw]">
+                                <div class="text-left">
+                                    <p class="text-[0.15vw] font-bold">Akad</p>
+                                    <p class="text-[0.12vw]">08:00 WIB</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-[0.15vw] font-bold">Resepsi</p>
+                                    <p class="text-[0.12vw]">11:00 WIB</p>
+                                </div>
+                            </div>
+
+                            <!-- LEVEL 5: RSVP BUTTON -->
+                            <div id="layer-5" onclick="event.stopPropagation(); showFinalRSVP()"
+                                class="pulse-hint hover:scale-110 transition">
+                                CONFIRM ATTENDANCE
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FINAL OVERLAY (Standard HTML) -->
+    <div id="rsvp-modal"
+        class="fixed inset-0 bg-black/95 z-50 hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-500">
+        <div class="bg-white max-w-sm w-full p-8 rounded shadow-2xl text-center">
+            <h2 class="heading-font text-2xl mb-2">RSVP</h2>
+            <p class="text-gray-500 text-sm mb-6">Enter your details to confirm.</p>
+            <input type="text" placeholder="Your Name"
+                class="w-full border-b border-gray-300 py-2 mb-4 outline-none focus:border-black transition">
+            <select class="w-full border-b border-gray-300 py-2 mb-6 outline-none focus:border-black transition">
+                <option>Saya akan hadir</option>
+                <option>Maaf, tidak bisa hadir</option>
+            </select>
+            <button onclick="alert('Confirmed!')"
+                class="w-full bg-black text-white py-3 font-bold uppercase tracking-widest hover:bg-gray-800 transition">Submit</button>
+            <button onclick="resetAll()" class="mt-4 text-xs text-gray-400 underline hover:text-black">From
+                Beginning</button>
+        </div>
+    </div>
+
+    <!-- AUDIO -->
+    <audio id="bg-audio" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-16.mp3" type="audio/mpeg">
+    </audio>
+    <div class="fixed top-4 right-4 z-50 mix-blend-difference text-white cursor-pointer"
+        onclick="document.getElementById('bg-audio').play()">
+        <i class="fas fa-music"></i>
+    </div>
+
+    <script>
+        const camera = document.getElementById('camera');
+        let currentLevel = 1;
+
+        // Visual Zoom Helper
+        function applyZoom(targetId, scale) {
+            const target = document.getElementById(targetId);
+            const camRect = camera.getBoundingClientRect();
+            // Since we nested translations, getting absolute center is simpler if we track coordinates manually
+            // But getBoundingClientRect is reliable for current on-screen position.
+
+            const rect = target.getBoundingClientRect();
+            const targetCX = rect.left + rect.width / 2;
+            const targetCY = rect.top + rect.height / 2;
+
+            // We want to transform the camera such that targetCX,CY moves to ScreenCX,CY
+            // AND scale increases.
+
+            // Standard Trick: Set transform-origin to the point we want to zoom into (relative to the element being transformed)
+            // The element being transformed is 'camera'.
+            // So we need (targetCX, targetCY) in 'camera' local coordinates.
+            // Since camera is top:0, left:0, its local coord system matches screen... IF scale was 1.
+            // But scale changes.
+
+            // Current Transform Matrix
+            const style = window.getComputedStyle(camera);
+            const matrix = new DOMMatrix(style.transform);
+            const currentScale = matrix.a;
+
+            // Equation: elementX = (screenX - cameraX) / scale
+            // cameraX is matrix.e (translateX), cameraY is matrix.f (translateY)
+            // But we are not using translate in this demo, only scale + origin.
+            // If we manipulate origin, matrix.e/f shift implicitly? No, origin shifts position.
+
+            // Let's use the stable approach:
+            // Point relative to camera's top-left current visual box:
+            // LocalX = (targetCX - camRect.left) / currentScale;
+            // LocalY = (targetCY - camRect.top) / currentScale;
+
+            // That Local point is where we want to set the new origin.
+            // Wait, if we change origin, the image jumps unless we translate.
+
+            // SIMPLER METHOD FOR THIS DEMO:
+            // Just use strict predefined transforms because we know the CSS positions.
+            // Layer 1 (Sky): Origin 50% 50%. Scale 1.
+            // Layer 2 (House): It's at top:60%, left:50% of Layer 1. 
+            // So Origin should be 50% 60%. Scale 4.
+            // Layer 3 (Window): Inside House (which is centered at 50% 60%). 
+            // Window is at 40% top of House.
+            // So relative to House, it's 40%. Relative to Sky?
+            // Sky -> House (60%) -> Window (40% of House height down from House Top).
+            // This is messy to calculate dynamically.
+
+            // AUTOMATIC CALCULATION:
+            // 1. Get Target Center relative to CAMERA (unscaled).
+            //    Since we nested HTML, `offsetParent` chain can tell us.
+            //    Or just use `getBoundingClientRect` and divide by current total scale? Yes.
+
+            const pX = (targetCX - camRect.left) / currentScale;
+            const pY = (targetCY - camRect.top) / currentScale;
+
+            camera.style.transformOrigin = `${pX}px ${pY}px`;
+            camera.style.transform = `scale(${currentScale * scale})`;
+        }
+
+        function zoomTo(level) {
+            if (level === 2) {
+                // Zoom to House (Couple)
+                applyZoom('layer-2', 4);
+                setTimeout(() => document.getElementById('text-2').style.opacity = 1, 1000);
+            }
+            else if (level === 3) {
+                // Zoom to Window (Doa)
+                applyZoom('layer-3', 4); // 4 * 4 = 16x total
+                setTimeout(() => document.getElementById('text-3').style.opacity = 1, 1000);
+            }
+            else if (level === 4) {
+                // Zoom to Book (Events)
+                applyZoom('layer-4', 6); // 16 * 6 = 96x total
+                setTimeout(() => document.getElementById('text-4').style.opacity = 1, 1000);
+            }
+
+            currentLevel = level;
+        }
+
+        function showFinalRSVP() {
+            document.getElementById('rsvp-modal').classList.remove('hidden');
+            setTimeout(() => document.getElementById('rsvp-modal').classList.remove('opacity-0'), 100);
+        }
+
+        function resetAll() {
+            // Hard reset
+            camera.style.transition = 'none';
+            camera.style.transform = 'scale(1)';
+            camera.style.transformOrigin = 'center center';
+
+            // Hide texts
+            document.getElementById('text-2').style.opacity = 0;
+            document.getElementById('text-3').style.opacity = 0;
+            document.getElementById('text-4').style.opacity = 0;
+
+            document.getElementById('rsvp-modal').classList.add('opacity-0');
+            setTimeout(() => {
+                document.getElementById('rsvp-modal').classList.add('hidden');
+                camera.style.transition = 'transform 2.5s cubic-bezier(0.25, 1, 0.5, 1)';
+            }, 500);
+
+            currentLevel = 1;
+        }
+    </script>
+</body>
+
+</html>

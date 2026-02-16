@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Wedding of Rama & Shinta</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Great+Vibes&family=Lato:wght@300;400;700&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'gold': '#D4AF37',
+                        'dark-gold': '#B8860B',
+                        'batik-brown': '#3E2723',
+                        'cream': '#FDF5E6',
+                        'sage': '#8FBC8F',
+                    },
+                    fontFamily: {
+                        'serif': ['"Cormorant Garamond"', 'serif'],
+                        'script': ['"Great Vibes"', 'cursive'],
+                        'sans': ['"Lato"', 'sans-serif'],
+                    },
+                    backgroundImage: {
+                        'batik-pattern': "url('https://www.transparenttextures.com/patterns/batik.png')", /* Subtle pattern */
+                        'hero-bg': "url('https://images.unsplash.com/photo-1605364850069-252658306359?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')",
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #FDF5E6;
+            /* Cream Base */
+            color: #3E2723;
+        }
+
+        .ornament {
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Javanese_batik_pattern.svg/1200px-Javanese_batik_pattern.svg.png');
+            /* Placeholder for specific Batik ornament */
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+
+        .golden-gradient {
+            background: linear-gradient(135deg, #CFB53B 0%, #B8860B 50%, #CFB53B 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .golden-border {
+            border: 2px solid #D4AF37;
+            position: relative;
+        }
+
+        .golden-border::after {
+            content: '';
+            position: absolute;
+            top: -5px;
+            bottom: -5px;
+            left: -5px;
+            right: -5px;
+            border: 1px solid #B8860B;
+            pointer-events: none;
+        }
+
+        .fade-in {
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .texture-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
+            opacity: 0.4;
+            z-index: 50;
+        }
+    </style>
+</head>
+
+<body class="font-sans antialiased overflow-x-hidden relative">
+
+    <!-- Paper Texture Overlay -->
+    <div class="texture-overlay"></div>
+
+    <!-- AUDIO BUTTON -->
+    <div class="fixed top-4 right-4 z-50">
+        <button onclick="toggleMusic()"
+            class="bg-batik-brown text-gold p-3 rounded-full shadow-lg border border-gold hover:bg-gold hover:text-batik-brown transition duration-300">
+            <svg id="music-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 animate-spin-slow" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2z" />
+            </svg>
+        </button>
+    </div>
+
+    <!-- HERO / OPENING -->
+    <section
+        class="h-screen w-full relative flex items-center justify-center bg-batik-pattern bg-blend-multiply bg-batik-brown">
+        <div class="absolute inset-0 bg-black/60"></div>
+
+        <!-- Decoration Frame -->
+        <div
+            class="absolute inset-4 border-2 border-gold/50 m-4 md:m-8 pointer-events-none flex items-center justify-center">
+            <div class="border border-gold/30 absolute inset-1"></div>
+            <!-- Corner Ornaments (CSS Shapes) -->
+            <div class="absolute top-0 left-0 w-16 h-16 border-t-4 border-l-4 border-gold"></div>
+            <div class="absolute top-0 right-0 w-16 h-16 border-t-4 border-r-4 border-gold"></div>
+            <div class="absolute bottom-0 left-0 w-16 h-16 border-b-4 border-l-4 border-gold"></div>
+            <div class="absolute bottom-0 right-0 w-16 h-16 border-b-4 border-r-4 border-gold"></div>
+        </div>
+
+        <div class="text-center z-10 text-cream px-4 fade-in">
+            <p class="font-serif italic text-lg md:text-xl mb-4 tracking-widest uppercase">The Wedding Of</p>
+            <h1
+                class="font-script text-6xl md:text-8xl lg:text-9xl mb-4 text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-yellow-400 to-yellow-200 drop-shadow-lg">
+                Rama & Shinta
+            </h1>
+            <p class="font-serif text-lg md:text-xl mt-6 italic">Kamis, 12 Februari 2026</p>
+
+            <div class="mt-12 animate-bounce">
+                <button onclick="document.getElementById('mempelai').scrollIntoView({behavior: 'smooth'})"
+                    class="border border-gold text-gold px-8 py-3 hover:bg-gold hover:text-batik-brown transition duration-500 rounded text-sm tracking-widest uppercase font-serif">
+                    Buka Undangan
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION: SALAM & QUOTE -->
+    <section class="py-20 px-4 bg-cream text-center">
+        <div class="max-w-3xl mx-auto">
+            <img src="https://clipart-library.com/images_k/gold-flourish-transparent/gold-flourish-transparent-9.png"
+                class="h-12 mx-auto mb-6 opacity-70" alt="decoration">
+            <p class="font-script text-3xl md:text-4xl text-batik-brown mb-6">Assalamu’alaikum Warahmatullahi
+                Wabarakatuh</p>
+            <p class="font-serif text-lg text-gray-700 leading-relaxed mb-8 italic">
+                "Maha Suci Allah yang telah menciptakan makhluk-Nya berpasang-pasangan. Ya Allah, perkenankanlah kami
+                merangkai kasih sayang yang Kau ciptakan di antara putra-putri kami."
+            </p>
+            <p class="font-bold text-batik-brown font-serif">(QS. Ar-Rum: 21)</p>
+        </div>
+    </section>
+
+    <!-- SECTION: MEMPELAI -->
+    <section id="mempelai" class="py-20 bg-batik-brown relative text-cream">
+        <!-- Pattern Overlay -->
+        <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/batik.png')]">
+        </div>
+
+        <div class="container mx-auto px-4 relative z-10">
+            <h2 class="font-script text-5xl md:text-6xl text-center mb-16 text-gold">Mempelai</h2>
+
+            <div class="flex flex-col md:flex-row justify-center items-center gap-12 md:gap-24">
+
+                <!-- GROOM -->
+                <div class="text-center group">
+                    <div
+                        class="relative w-48 h-64 md:w-64 md:h-80 mx-auto mb-6 transition transform group-hover:-translate-y-2 duration-500">
+                        <div class="absolute inset-0 border-4 border-gold transform rotate-3"></div>
+                        <div class="absolute inset-0 border-4 border-gold/50 transform -rotate-3"></div>
+                        <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                            alt="Groom" class="w-full h-full object-cover shadow-2xl">
+                    </div>
+                    <h3 class="font-serif text-3xl font-bold text-gold mb-2">Rama Wijaya</h3>
+                    <p class="font-sans text-sm tracking-wide opacity-80 uppercase mb-1">Putra Pertama dari</p>
+                    <p class="font-serif italic text-lg">Bpk. Prabu Dasarata & Ibu Kosalya</p>
+                </div>
+
+                <div class="font-script text-6xl text-gold opacity-50">&</div>
+
+                <!-- BRIDE -->
+                <div class="text-center group">
+                    <div
+                        class="relative w-48 h-64 md:w-64 md:h-80 mx-auto mb-6 transition transform group-hover:-translate-y-2 duration-500">
+                        <div class="absolute inset-0 border-4 border-gold transform -rotate-3"></div>
+                        <div class="absolute inset-0 border-4 border-gold/50 transform rotate-3"></div>
+                        <img src="https://images.unsplash.com/photo-1549419409-f62f8546f197?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                            alt="Bride" class="w-full h-full object-cover shadow-2xl">
+                    </div>
+                    <h3 class="font-serif text-3xl font-bold text-gold mb-2">Dewi Shinta</h3>
+                    <p class="font-sans text-sm tracking-wide opacity-80 uppercase mb-1">Putri Tunggal dari</p>
+                    <p class="font-serif italic text-lg">Bpk. Prabu Janaka & Ibu Kekayi</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION: ACARA -->
+    <section class="py-20 px-4 bg-cream relative">
+        <div class="absolute top-0 left-0 w-32 h-32 opacity-20">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Logo_gunungan_wayang.svg/1200px-Logo_gunungan_wayang.svg.png"
+                alt="Gunungan" class="w-full h-full object-contain">
+        </div>
+
+        <div class="container mx-auto max-w-4xl text-center relative z-10">
+            <h2 class="font-script text-5xl text-batik-brown mb-12">Rangkaian Acara</h2>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- AKAD -->
+                <div
+                    class="bg-white p-8 shadow-xl border-t-8 border-batik-brown relative overflow-hidden group hover:shadow-2xl transition duration-300">
+                    <div
+                        class="absolute top-0 right-0 bg-gold text-batik-brown px-4 py-1 text-xs font-bold uppercase rounded-bl-lg">
+                        Akad Nikah</div>
+                    <h3 class="font-serif text-3xl font-bold text-batik-brown mb-4">Akad Nikah</h3>
+
+                    <div class="flex justify-center items-center gap-4 mb-6 text-gray-600">
+                        <div class="text-center">
+                            <span class="block text-3xl font-bold text-gold">12</span>
+                            <span class="text-xs uppercase tracking-widest">Februari</span>
+                        </div>
+                        <div class="h-8 w-px bg-gray-300"></div>
+                        <div class="text-center">
+                            <span class="block text-xl font-bold">2026</span>
+                            <span class="text-xs uppercase tracking-widest">Kamis</span>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-b border-gray-200 py-4 mb-6">
+                        <p class="font-serif text-lg mb-1">Pukul 08:00 WIB - Selesai</p>
+                        <p class="text-sm text-gray-500 font-sans italic">Bertempat di Masjid Agung Keraton</p>
+                    </div>
+
+                    <a href="#"
+                        class="inline-block bg-batik-brown text-gold px-6 py-2 rounded-full text-sm font-bold uppercase tracking-wider hover:bg-gold hover:text-white transition">Lihat
+                        Lokasi</a>
+                </div>
+
+                <!-- RESEPSI -->
+                <div
+                    class="bg-white p-8 shadow-xl border-t-8 border-gold relative overflow-hidden group hover:shadow-2xl transition duration-300">
+                    <div
+                        class="absolute top-0 right-0 bg-batik-brown text-gold px-4 py-1 text-xs font-bold uppercase rounded-bl-lg">
+                        Resepsi</div>
+                    <h3 class="font-serif text-3xl font-bold text-batik-brown mb-4">Resepsi</h3>
+
+                    <div class="flex justify-center items-center gap-4 mb-6 text-gray-600">
+                        <div class="text-center">
+                            <span class="block text-3xl font-bold text-gold">14</span>
+                            <span class="text-xs uppercase tracking-widest">Februari</span>
+                        </div>
+                        <div class="h-8 w-px bg-gray-300"></div>
+                        <div class="text-center">
+                            <span class="block text-xl font-bold">2026</span>
+                            <span class="text-xs uppercase tracking-widest">Sabtu</span>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-b border-gray-200 py-4 mb-6">
+                        <p class="font-serif text-lg mb-1">Pukul 11:00 - 14:00 WIB</p>
+                        <p class="text-sm text-gray-500 font-sans italic">Grand Ballroom Hotel Royal Ambarrukmo</p>
+                    </div>
+
+                    <a href="#"
+                        class="inline-block bg-batik-brown text-gold px-6 py-2 rounded-full text-sm font-bold uppercase tracking-wider hover:bg-gold hover:text-white transition">Lihat
+                        Lokasi</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION: RSVP -->
+    <section class="py-20 bg-batik-brown text-cream relative">
+        <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/batik.png')]">
+        </div>
+
+        <div
+            class="max-w-xl mx-auto px-6 relative z-10 bg-black/20 backdrop-blur-sm p-8 rounded-lg border border-gold/30">
+            <h2 class="font-script text-4xl text-center mb-8 text-gold">Konfirmasi Kehadiran</h2>
+
+            <form onsubmit="submitRSVP(event)">
+                <div class="mb-6">
+                    <label class="block font-serif text-lg mb-2">Nama Lengkap</label>
+                    <input type="text"
+                        class="w-full bg-cream/10 border-b border-gold text-cream p-3 focus:outline-none focus:bg-cream/20 font-sans transition placeholder-gray-400"
+                        placeholder="Masukkan nama anda" required>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block font-serif text-lg mb-2">Jumlah Kehadiran</label>
+                    <select
+                        class="w-full bg-cream/10 border-b border-gold text-cream p-3 focus:outline-none focus:bg-cream/20 font-sans transition">
+                        <option class="text-gray-800">Sendiri</option>
+                        <option class="text-gray-800">Berdua</option>
+                        <option class="text-gray-800">Tidak dapat hadir</option>
+                    </select>
+                </div>
+
+                <div class="mb-8">
+                    <label class="block font-serif text-lg mb-2">Ucapan & Doa</label>
+                    <textarea
+                        class="w-full bg-cream/10 border-b border-gold text-cream p-3 focus:outline-none focus:bg-cream/20 font-sans h-24 placeholder-gray-400"
+                        placeholder="Tulis ucapan selamat..."></textarea>
+                </div>
+
+                <button type="submit"
+                    class="w-full bg-gold text-batik-brown font-bold py-3 uppercase tracking-widest hover:bg-cream transition duration-300 shadow-lg">Kirim
+                    Konfirmasi</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-black text-center py-6 text-gray-500 text-sm">
+        <p>&copy; 2026 Rama & Shinta Wedding. All Rights Reserved.</p>
+        <p class="text-xs mt-1">Designed with <span class="text-red-500">♥</span> in Yogyakarta</p>
+    </footer>
+
+    <!-- AUDIO ELEMENT -->
+    <audio id="bg-music" loop>
+        <!-- Gamelan or traditional instrumental -->
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        let isPlaying = false;
+        const audio = document.getElementById("bg-music");
+        const icon = document.getElementById("music-icon");
+
+        function toggleMusic() {
+            if (isPlaying) {
+                audio.pause();
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />';
+            } else {
+                audio.play();
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2z" />';
+            }
+            isPlaying = !isPlaying;
+        }
+
+        function submitRSVP(e) {
+            e.preventDefault();
+            alert("Matur Nuwun! Konfirmasi kehadiran panjenengan sampun kito tampi."); // Javanese touch
+        }
+    </script>
+</body>
+
+</html>

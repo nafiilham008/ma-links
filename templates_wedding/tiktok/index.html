@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>The Wedding of Dilan & Milea</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Proxima+Nova&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            background-color: #000;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            /* Prevent body scroll, handle in app-container */
+        }
+
+        .app-container {
+            height: 100vh;
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+            position: relative;
+            background: #000;
+            overflow: hidden;
+            border-left: 1px solid #1f1f1f;
+            border-right: 1px solid #1f1f1f;
+        }
+
+        .scroll-container {
+            height: 100%;
+            width: 100%;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            scrollbar-width: none;
+            /* Firefox */
+            -ms-overflow-style: none;
+            /* IE */
+        }
+
+        .scroll-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .snap-section {
+            height: 100%;
+            width: 100%;
+            scroll-snap-align: start;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .text-shadow {
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+        }
+
+        .story-ring {
+            background: linear-gradient(45deg, #f9ce34, #ee2a7b, #6228d7);
+            padding: 2px;
+            border-radius: 50%;
+        }
+
+        .story-seen {
+            background: #555;
+        }
+
+        /* Heart Animation */
+        @keyframes floatHeart {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-100px) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        .heart-float {
+            position: absolute;
+            color: #fe2c55;
+            font-size: 24px;
+            animation: floatHeart 1s ease-out forwards;
+            pointer-events: none;
+        }
+
+        /* Comment Sheet Animation */
+        .comment-sheet {
+            transition: transform 0.3s ease-in-out;
+            transform: translateY(100%);
+        }
+
+        .comment-sheet.open {
+            transform: translateY(0);
+            z-index: 50;
+            /* Ensure on top for full visibility */
+        }
+
+        /* Music Disc Animation */
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .music-disc {
+            animation: spin 5s linear infinite;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app-container">
+
+        <!-- HEADER (Overlay) -->
+        <div class="absolute top-0 left-0 right-0 z-20 pt-4 pb-2 px-4 bg-gradient-to-b from-black/60 to-transparent">
+            <div class="flex justify-center items-center text-lg font-bold gap-4 text-gray-400">
+                <span>Following</span>
+                <span class="text-white border-b-2 border-white pb-1">For You</span>
+            </div>
+        </div>
+
+        <!-- STORY BAR -->
+        <div class="absolute top-16 left-0 right-0 z-20 px-4 overflow-x-auto whitespace-nowrap scrollbar-hide">
+            <div class="flex gap-4">
+                <div class="flex flex-col items-center gap-1 cursor-pointer" onclick="showStory('Groom')">
+                    <div class="w-16 h-16 story-ring">
+                        <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80"
+                            class="w-full h-full rounded-full border-2 border-black object-cover">
+                    </div>
+                    <span class="text-xs text-white drop-shadow-md">Groom</span>
+                </div>
+                <div class="flex flex-col items-center gap-1 cursor-pointer" onclick="showStory('Bride')">
+                    <div class="w-16 h-16 story-ring">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80"
+                            class="w-full h-full rounded-full border-2 border-black object-cover">
+                    </div>
+                    <span class="text-xs text-white drop-shadow-md">Bride</span>
+                </div>
+                <div class="flex flex-col items-center gap-1 cursor-pointer" onclick="showStory('Venue')">
+                    <div class="w-16 h-16 story-ring">
+                        <img src="https://images.unsplash.com/photo-1519225448526-72997f2051d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80"
+                            class="w-full h-full rounded-full border-2 border-black object-cover">
+                    </div>
+                    <span class="text-xs text-white drop-shadow-md">Venue</span>
+                </div>
+                <!-- Add Your Story -->
+                <div class="flex flex-col items-center gap-1 cursor-pointer" onclick="openComments()">
+                    <div
+                        class="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center border-2 border-white">
+                        <i class="fas fa-plus text-white text-xl"></i>
+                    </div>
+                    <span class="text-xs text-white drop-shadow-md">RSVP</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN SCROLL CONTAINER -->
+        <div class="scroll-container" id="feed">
+
+            <!-- PAGE 1: OPENING / HERO -->
+            <div class="snap-section flex flex-col justify-end pb-20 px-4"
+                style="background-image: url('https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');">
+                <div class="absolute inset-0 bg-black/30"></div>
+
+                <div class="relative z-10 w-full pr-16 mb-4">
+                    <h2 class="font-bold text-xl mb-1 text-shadow">@Dilan_Milea_Wedding</h2>
+                    <p class="text-sm mb-2 text-shadow leading-relaxed">
+                        Undangan Pernikahan Dilan & Milea ❤️ <br>
+                        Minggu, 28 Februari 2026. <br>
+                        #WeddingInvitation #DilanMilea #LoveStory #FYP
+                    </p>
+                    <div class="flex items-center gap-2 text-xs font-bold mb-4">
+                        <i class="fas fa-music animate-spin-slow"></i>
+                        <marquee class="w-32">Original Sound - Wedding Vibes - Romantic Instrumental</marquee>
+                    </div>
+                </div>
+
+                <!-- Right Sidebar -->
+                <div class="absolute bottom-20 right-2 z-20 flex flex-col items-center gap-6">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80"
+                            class="w-12 h-12 rounded-full border-2 border-white">
+                        <div class="absolute -bottom-2 inset-x-0 flex justify-center">
+                            <div
+                                class="bg-red-500 rounded-full w-5 h-5 flex items-center justify-center text-[10px] text-white">
+                                <i class="fas fa-plus"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col items-center gap-1 group cursor-pointer" onclick="toggleLove(this)">
+                        <i
+                            class="fas fa-heart text-4xl text-white drop-shadow-md transition-transform duration-200 group-active:scale-75 heart-icon"></i>
+                        <span class="text-xs font-bold text-shadow count">12.5K</span>
+                    </div>
+
+                    <div class="flex flex-col items-center gap-1 cursor-pointer" onclick="openComments()">
+                        <i class="fas fa-comment-dots text-4xl text-white drop-shadow-md"></i>
+                        <span class="text-xs font-bold text-shadow">RSVP</span>
+                    </div>
+
+                    <div class="flex flex-col items-center gap-1 cursor-pointer" onclick="shareLink()">
+                        <i class="fas fa-share text-4xl text-white drop-shadow-md"></i>
+                        <span class="text-xs font-bold text-shadow">Share</span>
+                    </div>
+
+                    <div
+                        class="music-disc w-12 h-12 bg-gray-900 rounded-full border-8 border-gray-800 flex items-center justify-center overflow-hidden mt-4">
+                        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80"
+                            class="w-full h-full object-cover">
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE 2: EVENTS (AKAD & RESEPSI) -->
+            <div class="snap-section flex flex-col justify-end pb-20 px-4"
+                style="background-image: url('https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');">
+                <div class="absolute inset-0 bg-black/40"></div>
+
+                <div class="relative z-10 w-full pr-16 mb-4">
+                    <h2 class="font-bold text-xl mb-1 text-shadow">Rangkaian Acara 📅</h2>
+                    <div class="bg-white/20 backdrop-blur-md p-4 rounded-xl mb-2 border border-white/20">
+                        <h3 class="font-bold text-yellow-300">Akad Nikah</h3>
+                        <p class="text-xs">08:00 WIB @ Masjid Agung</p>
+                    </div>
+                    <div class="bg-white/20 backdrop-blur-md p-4 rounded-xl mb-2 border border-white/20">
+                        <h3 class="font-bold text-pink-300">Resepsi</h3>
+                        <p class="text-xs">11:00 WIB @ Grand Ballroom</p>
+                    </div>
+                    <p class="text-sm mb-2 text-shadow">
+                        Jangan lupa hadir ya guys! Save the date! #WeddingEvents
+                    </p>
+                </div>
+
+                <!-- Right Sidebar (Duplicated structure for consistency) -->
+                <div class="absolute bottom-20 right-2 z-20 flex flex-col items-center gap-6">
+                    <div class="flex flex-col items-center gap-1 group cursor-pointer" onclick="toggleLove(this)">
+                        <i
+                            class="fas fa-heart text-4xl text-white drop-shadow-md transition-transform duration-200 group-active:scale-75 heart-icon"></i>
+                        <span class="text-xs font-bold text-shadow count">5.2K</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-1 cursor-pointer" onclick="openComments()">
+                        <i class="fas fa-comment-dots text-4xl text-white drop-shadow-md"></i>
+                        <span class="text-xs font-bold text-shadow">RSVP</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-1 cursor-pointer"
+                        onclick="window.open('https://maps.google.com', '_blank')">
+                        <div class="bg-green-500 p-2 rounded-full w-10 h-10 flex items-center justify-center">
+                            <i class="fas fa-map-marker-alt text-xl text-white mb-0"></i>
+                        </div>
+                        <span class="text-xs font-bold text-shadow">Maps</span>
+                    </div>
+                    <div
+                        class="music-disc w-12 h-12 bg-gray-900 rounded-full border-8 border-gray-800 flex items-center justify-center overflow-hidden mt-4">
+                        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80"
+                            class="w-full h-full object-cover">
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE 3: MAP Location / Closing -->
+            <div class="snap-section flex flex-col justify-center items-center px-4 bg-gray-900 text-center relative">
+                <i class="fas fa-map-marked-alt text-6xl text-gray-600 mb-4"></i>
+                <h2 class="text-2xl font-bold mb-2">Lokasi Acara</h2>
+                <p class="text-gray-400 text-sm mb-6">Gedung Serbaguna, Jl. Protokol No. 1</p>
+                <div class="w-full h-64 bg-gray-700 rounded-xl mb-6 flex items-center justify-center">
+                    <span class="text-gray-400">Google Maps Embed Placeholder</span>
+                </div>
+                <button class="bg-[#fe2c55] text-white px-8 py-3 rounded-md font-bold w-full max-w-xs"
+                    onclick="window.open('https://maps.google.com', '_blank')">
+                    Buka di Google Maps
+                </button>
+            </div>
+
+        </div>
+
+        <!-- BOTTOM NAV -->
+        <div
+            class="absolute bottom-0 left-0 right-0 h-14 bg-black border-t border-gray-800 flex justify-around items-center z-30 text-xs text-gray-500">
+            <div class="flex flex-col items-center text-white cursor-pointer" onclick="scrollToTop()">
+                <i class="fas fa-home text-lg mb-1"></i>
+                <span>Home</span>
+            </div>
+            <div class="flex flex-col items-center cursor-pointer">
+                <i class="fas fa-user-friends text-lg mb-1"></i>
+                <span>Friends</span>
+            </div>
+            <!-- Center Add Button -->
+            <div class="relative cursor-pointer" onclick="openComments()">
+                <div
+                    class="w-10 h-7 bg-white rounded-lg flex items-center justify-center border-x-4 border-x-[#25F4EE] border-r-[#FE2C55]">
+                    <i class="fas fa-plus text-black"></i>
+                </div>
+            </div>
+            <div class="flex flex-col items-center cursor-pointer">
+                <i class="far fa-comment-alt text-lg mb-1"></i>
+                <span>Inbox</span>
+            </div>
+            <div class="flex flex-col items-center cursor-pointer">
+                <i class="far fa-user text-lg mb-1"></i>
+                <span>Me</span>
+            </div>
+        </div>
+
+        <!-- COMMENT / RSVP DRAWER -->
+        <div id="comment-drawer"
+            class="comment-sheet fixed inset-x-0 bottom-0 h-[70vh] bg-white rounded-t-2xl z-40 text-black flex flex-col">
+            <!-- Handle -->
+            <div class="w-full flex justify-center pt-3 pb-1 cursor-pointer" onclick="closeComments()">
+                <div class="w-10 h-1 bg-gray-300 rounded-full"></div>
+            </div>
+
+            <!-- Header -->
+            <div
+                class="px-4 py-2 border-b border-gray-100 flex justify-between items-center bg-white sticky top-0 rounded-t-2xl">
+                <div class="font-bold text-center flex-1">
+                    RSVP & Ucapan <span class="text-gray-500 font-normal text-xs">(342)</span>
+                </div>
+                <button onclick="closeComments()" class="text-gray-500 p-2">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <!-- Comments List -->
+            <div class="flex-1 overflow-y-auto px-4 py-4 space-y-4 bg-gray-50" id="comments-list">
+                <!-- Sample Comment 1 -->
+                <div class="flex gap-3">
+                    <img src="https://randomuser.me/api/portraits/women/12.jpg" class="w-8 h-8 rounded-full">
+                    <div class="flex-1">
+                        <p class="text-xs font-bold text-gray-600">Sarah Teman SMA</p>
+                        <p class="text-sm">Selamat yaaa Dilan & Milea! Semoga samawa ❤️</p>
+                        <div class="flex gap-4 mt-1 text-gray-400 text-xs">
+                            <span>2h ago</span>
+                            <span class="font-bold text-gray-500 cursor-pointer">Reply</span>
+                            <div class="flex items-center gap-1 cursor-pointer">
+                                <i class="far fa-heart"></i> 12
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Sample Comment 2 -->
+                <div class="flex gap-3">
+                    <img src="https://randomuser.me/api/portraits/men/32.jpg" class="w-8 h-8 rounded-full">
+                    <div class="flex-1">
+                        <p class="text-xs font-bold text-gray-600">Budi Kantor</p>
+                        <p class="text-sm">Hadir bro! OTW Cikampek 🔥</p>
+                        <div class="flex gap-4 mt-1 text-gray-400 text-xs">
+                            <span>5h ago</span>
+                            <span class="font-bold text-gray-500 cursor-pointer">Reply</span>
+                            <div class="flex items-center gap-1 cursor-pointer">
+                                <i class="far fa-heart"></i> 5
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comment Input -->
+            <div class="p-3 border-t border-gray-200 bg-white flex items-center gap-3 pb-6 md:pb-3">
+                <input type="text" id="comment-input"
+                    class="flex-1 bg-gray-100 rounded-full px-4 py-2 text-sm focus:outline-none"
+                    placeholder="Tulis ucapan selamat...">
+                <button onclick="addComment()" class="text-[#fe2c55] font-bold text-sm p-2">Post</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- AUDIO -->
+    <audio id="bg-audio" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // PLAY AUDIO ON CLICK (Browser Policy)
+        document.body.addEventListener('click', function () {
+            const audio = document.getElementById('bg-audio');
+            if (audio.paused) {
+                audio.play();
+            }
+        }, { once: true });
+
+        // LOVE ANIMATION & TOGGLE
+        function toggleLove(element) {
+            const icon = element.querySelector('.heart-icon');
+            const count = element.querySelector('.count');
+
+            // Toggle Color
+            if (icon.classList.contains('text-white')) {
+                icon.classList.remove('text-white');
+                icon.classList.add('text-[#fe2c55]');
+                // Animate Float
+                createFloatingHeart(element);
+                // Increment Count Mockup
+                let current = parseFloat(count.innerText);
+                count.innerText = (current + 0.1).toFixed(1) + 'K';
+            } else {
+                icon.classList.add('text-white');
+                icon.classList.remove('text-[#fe2c55]');
+            }
+        }
+
+        function createFloatingHeart(container) {
+            const heart = document.createElement('i');
+            heart.classList.add('fas', 'fa-heart', 'heart-float');
+            // Random position float
+            const randomX = (Math.random() - 0.5) * 50;
+            heart.style.transform = `translateX(${randomX}px)`;
+
+            container.appendChild(heart);
+            setTimeout(() => {
+                heart.remove();
+            }, 1000);
+        }
+
+        // COMMENT DRAWER
+        function openComments() {
+            document.getElementById('comment-drawer').classList.add('open');
+        }
+
+        function closeComments() {
+            document.getElementById('comment-drawer').classList.remove('open');
+        }
+
+        function addComment() {
+            const input = document.getElementById('comment-input');
+            const text = input.value;
+            if (!text) return;
+
+            const list = document.getElementById('comments-list');
+            const newComment = document.createElement('div');
+            newComment.className = 'flex gap-3 animate-pulse'; // simple animation
+            newComment.innerHTML = \`
+                <div class="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-xs font-bold">ME</div>
+                <div class="flex-1">
+                    <p class="text-xs font-bold text-gray-600">Tamu Undangan</p>
+                    <p class="text-sm">\${text}</p>
+                    <div class="flex gap-4 mt-1 text-gray-400 text-xs">
+                        <span>Just now</span>
+                        <span class="font-bold text-gray-500">Reply</span>
+                    </div>
+                </div>
+            \`;
+            
+            list.prepend(newComment);
+            input.value = '';
+            
+            // Scroll to top
+             list.scrollTop = 0;
+        }
+
+        function shareLink() {
+            alert("Link undangan berhasil disalin!");
+        }
+
+        function showStory(name) {
+            alert("Melihat Story: " + name);
+        }
+
+        function scrollToTop() {
+             document.querySelector('.scroll-container').scrollTo({top: 0, behavior: 'smooth'});
+        }
+    </script>
+</body>
+
+</html>

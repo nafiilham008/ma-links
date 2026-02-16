@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Wedding of Aris & Kinan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Circular+Std:wght@400;700;900&family=Inter:wght@400;600;700&display=swap');
+
+        body {
+            background-color: #121212;
+            color: white;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Spotify Green */
+        .text-spotify {
+            color: #1DB954;
+        }
+
+        .bg-spotify {
+            background-color: #1DB954;
+        }
+
+        .hover-spotify:hover {
+            color: #1DB954;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(180deg, #535353 0%, #121212 100%);
+        }
+
+        .track-row:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .playing-bar {
+            background-color: #181818;
+            border-top: 1px solid #282828;
+        }
+
+        /* Loading Animation */
+        .equalizer-bar {
+            width: 3px;
+            background-color: #1DB954;
+            animation: equalize 1s infinite;
+        }
+
+        @keyframes equalize {
+            0% {
+                height: 5px;
+            }
+
+            50% {
+                height: 15px;
+            }
+
+            100% {
+                height: 5px;
+            }
+        }
+    </style>
+</head>
+
+<body class="pb-24">
+
+    <!-- MAIN CONTAINER -->
+    <div class="max-w-screen-md mx-auto min-h-screen relative">
+
+        <!-- HEADER / ALBUM COVER -->
+        <div class="gradient-bg pt-20 px-6 pb-6">
+            <div class="flex flex-col md:flex-row items-center gap-6">
+                <!-- Album Art -->
+                <div class="w-48 h-48 md:w-56 md:h-56 shadow-2xl shrink-0 group relative cursor-pointer">
+                    <img src="https://images.unsplash.com/photo-1520854221250-858f27615202?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+                        class="w-full h-full object-cover shadow-lg" alt="Album Art">
+                </div>
+
+                <!-- Info -->
+                <div class="text-center md:text-left">
+                    <p class="text-xs font-bold uppercase tracking-wider mb-1">Single • 2026</p>
+                    <h1 class="text-4xl md:text-6xl font-black mb-2 tracking-tighter">The Wedding</h1>
+                    <div
+                        class="flex items-center justify-center md:justify-start gap-2 text-sm font-bold text-gray-300">
+                        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80"
+                            class="w-6 h-6 rounded-full object-cover">
+                        <span>Aris & Kinan</span>
+                        <span class="text-xs">• 12,345 likes • 5hr 30min</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACTION BAR -->
+        <div class="px-6 py-4 flex items-center gap-6 sticky top-0 bg-[#121212]/95 backdrop-blur-sm z-30">
+            <button
+                class="w-14 h-14 bg-spotify rounded-full flex items-center justify-center hover:scale-105 transition shadow-lg text-black"
+                onclick="togglePlay()">
+                <i class="fas fa-play text-xl ml-1" id="main-play-icon"></i>
+            </button>
+            <i class="fas fa-heart text-3xl text-spotify cursor-pointer hover:scale-110 transition"></i>
+            <i class="fas fa-arrow-circle-down text-3xl text-gray-400 hover:text-white cursor-pointer transition"></i>
+            <i class="fas fa-ellipsis-h text-2xl text-gray-400 hover:text-white ml-auto cursor-pointer"></i>
+        </div>
+
+        <!-- TRACKLIST -->
+        <div class="px-4 md:px-6">
+            <div class="text-gray-400 border-b border-[#282828] pb-2 mb-2 flex text-xs uppercase tracking-wider">
+                <span class="w-8 text-center">#</span>
+                <span class="flex-1">Title</span>
+                <span class="hidden md:block w-1/4">Album</span>
+                <span class="w-16 text-right"><i class="far fa-clock"></i></span>
+            </div>
+
+            <!-- Track 1: Opening / Doa (Playing State) -->
+            <div class="track-row flex items-center py-2 px-2 rounded group cursor-pointer" onclick="playTrack(1)">
+                <div class="w-8 text-center text-gray-400 group-hover:text-white text-sm">
+                    <span class="group-hover:hidden text-spotify"><i class="fas fa-chart-bar"></i></span>
+                    <!-- Playing icon -->
+                    <i class="fas fa-play hidden group-hover:inline text-white text-xs"></i>
+                </div>
+                <div class="flex-1 flex flex-col">
+                    <span class="text-white font-bold text-spotify">The Opening (Doa)</span>
+                    <span class="text-xs text-gray-400">Aris & Kinan • QS. Ar-Rum 21</span>
+                </div>
+                <div class="hidden md:block w-1/4 text-sm text-gray-400">Wedding Album</div>
+                <div class="w-16 text-right text-sm text-gray-400">1:30</div>
+            </div>
+
+            <!-- Track 2: Akad Nikah -->
+            <div class="track-row flex items-center py-2 px-2 rounded group cursor-pointer" onclick="playTrack(2)">
+                <div class="w-8 text-center text-gray-400 group-hover:text-white text-sm">
+                    <span class="group-hover:hidden">2</span>
+                    <i class="fas fa-play hidden group-hover:inline text-white text-xs"></i>
+                </div>
+                <div class="flex-1 flex flex-col">
+                    <span class="text-white font-bold">Akad Nikah (Holy Matrimony)</span>
+                    <span class="text-xs text-gray-400">08:00 WIB • Masjid Agung</span>
+                </div>
+                <div class="hidden md:block w-1/4 text-sm text-gray-400">Sacred Moments</div>
+                <div class="w-16 text-right text-sm text-gray-400">2:00</div>
+            </div>
+
+            <!-- Track 3: Resepsi -->
+            <div class="track-row flex items-center py-2 px-2 rounded group cursor-pointer" onclick="playTrack(3)">
+                <div class="w-8 text-center text-gray-400 group-hover:text-white text-sm">
+                    <span class="group-hover:hidden">3</span>
+                    <i class="fas fa-play hidden group-hover:inline text-white text-xs"></i>
+                </div>
+                <div class="flex-1 flex flex-col">
+                    <span class="text-white font-bold">Resepsi (The Party)</span>
+                    <span class="text-xs text-gray-400">11:00 WIB • Grand Ballroom Hotel</span>
+                </div>
+                <div class="hidden md:block w-1/4 text-sm text-gray-400">Celebration</div>
+                <div class="w-16 text-right text-sm text-gray-400">3:00</div>
+            </div>
+
+            <!-- Track 4: Location Map -->
+            <div class="track-row flex items-center py-2 px-2 rounded group cursor-pointer" onclick="openMap()">
+                <div class="w-8 text-center text-gray-400 group-hover:text-white text-sm">
+                    <span class="group-hover:hidden">4</span>
+                    <i class="fas fa-map-marker-alt hidden group-hover:inline text-white text-xs"></i>
+                </div>
+                <div class="flex-1 flex flex-col">
+                    <span class="text-white font-bold">Location Map</span>
+                    <span class="text-xs text-gray-400">Click to Open Google Maps</span>
+                </div>
+                <div class="hidden md:block w-1/4 text-sm text-gray-400">Navigation</div>
+                <div class="w-16 text-right text-sm text-gray-400">--:--</div>
+            </div>
+        </div>
+
+        <!-- RSVP FORM SECTION (Looks like "About the Artist") -->
+        <div class="px-6 py-8 mt-4">
+            <h2 class="text-2xl font-bold mb-4 hover:underline cursor-pointer">About the Couple</h2>
+            <div class="bg-[#181818] rounded-lg p-6 hover:bg-[#282828] transition group">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-16 h-16 rounded-full overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80"
+                            class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-xl">Confirm Attendance</h3>
+                        <p class="text-gray-400 text-sm">Monthly Listeners: 500 Guests</p>
+                    </div>
+                </div>
+                <p class="text-gray-300 text-sm mb-4 line-clamp-3 group-hover:line-clamp-none transition-all">
+                    Kami sangat mengharapkan kehadiran Anda di hari bahagia kami. Mohon konfirmasi kehadiran melalui
+                    form di bawah ini.
+                </p>
+
+                <!-- Simple Form Mockup -->
+                <form onsubmit="submitRSVP(event)" class="space-y-3">
+                    <input type="text" placeholder="Nama Anda"
+                        class="w-full bg-[#3e3e3e] border border-transparent focus:border-white rounded px-3 py-2 text-sm focus:outline-none text-white placeholder-gray-400 transition">
+                    <select
+                        class="w-full bg-[#3e3e3e] border border-transparent focus:border-white rounded px-3 py-2 text-sm focus:outline-none text-white transition">
+                        <option>Hadir</option>
+                        <option>Tidak Hadir</option>
+                    </select>
+                    <button
+                        class="border border-gray-500 text-white hover:border-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider transition">
+                        Submit
+                    </button>
+                    <button type="button"
+                        class="ml-2 bg-white text-black border border-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider transition hover:scale-105">
+                        Follow
+                    </button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- NOW PLAYING BAR (Fixed Bottom) -->
+    <div class="fixed bottom-0 left-0 right-0 playing-bar px-4 py-3 flex items-center justify-between z-40">
+        <!-- Song Info -->
+        <div class="flex items-center gap-3 w-1/3">
+            <img src="https://images.unsplash.com/photo-1520854221250-858f27615202?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80"
+                class="w-14 h-14 rounded shadow" id="current-art">
+            <div class="overflow-hidden">
+                <div class="font-bold text-sm truncate hover:underline cursor-pointer">Perfect</div>
+                <div class="text-xs text-gray-400 hover:text-white hover:underline cursor-pointer">Ed Sheeran</div>
+            </div>
+            <i class="far fa-heart text-spotify ml-2 hidden md:block"></i>
+        </div>
+
+        <!-- Controls (Center) -->
+        <div class="flex flex-col items-center w-1/3">
+            <div class="flex items-center gap-4 text-gray-400 text-lg mb-1">
+                <i class="fas fa-random text-sm hover:text-white cursor-pointer"></i>
+                <i class="fas fa-step-backward hover:text-white cursor-pointer"></i>
+                <button
+                    class="w-8 h-8 bg-white rounded-full flex items-center justify-center text-black hover:scale-110 transition"
+                    onclick="togglePlay()">
+                    <i class="fas fa-play text-sm ml-0.5" id="bar-play-icon"></i>
+                </button>
+                <i class="fas fa-step-forward hover:text-white cursor-pointer"></i>
+                <i class="fas fa-redo text-sm hover:text-white cursor-pointer"></i>
+            </div>
+            <!-- Progress Bar -->
+            <div class="w-full max-w-md flex items-center gap-2 text-[10px] text-gray-400">
+                <span>0:00</span>
+                <div class="flex-1 h-1 bg-gray-600 rounded-full group cursor-pointer">
+                    <div class="w-1/3 h-full bg-white rounded-full group-hover:bg-green-500 relative">
+                        <div
+                            class="absolute right-0 top-1/2 -mt-1.5 w-3 h-3 bg-white rounded-full shadow hidden group-hover:block">
+                        </div>
+                    </div>
+                </div>
+                <span>4:23</span>
+            </div>
+        </div>
+
+        <!-- Volume (Right) -->
+        <div class="w-1/3 flex justify-end items-center gap-2 text-gray-400">
+            <i class="fas fa-list hidden md:block hover:text-white cursor-pointer text-xs"></i>
+            <i class="fas fa-desktop hidden md:block hover:text-white cursor-pointer text-xs"></i>
+            <div class="flex items-center gap-2 group">
+                <i class="fas fa-volume-up text-xs"></i>
+                <div class="w-20 h-1 bg-gray-600 rounded-full cursor-pointer">
+                    <div class="w-3/4 h-full bg-white group-hover:bg-green-500 rounded-full"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AUDIO ELEMENT -->
+    <audio id="bg-audio" loop>
+        <!-- Use a real MP3 link usually -->
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        const audio = document.getElementById('bg-audio');
+        let isPlaying = false;
+
+        function togglePlay() {
+            const mainIcon = document.getElementById('main-play-icon');
+            const barIcon = document.getElementById('bar-play-icon');
+
+            if (isPlaying) {
+                audio.pause();
+                mainIcon.classList.remove('fa-pause');
+                mainIcon.classList.add('fa-play');
+                barIcon.classList.remove('fa-pause');
+                barIcon.classList.add('fa-play');
+            } else {
+                audio.play();
+                mainIcon.classList.remove('fa-play');
+                mainIcon.classList.add('fa-pause');
+                barIcon.classList.remove('fa-play');
+                barIcon.classList.add('fa-pause');
+            }
+            isPlaying = !isPlaying;
+        }
+
+        function playTrack(id) {
+            // Just a visual simulation for now
+            alert("Playing track #" + id);
+            if (!isPlaying) togglePlay();
+        }
+
+        function openMap() {
+            window.open('https://maps.google.com', '_blank');
+        }
+
+        function submitRSVP(e) {
+            e.preventDefault();
+            alert("RSVP Submitted! Thanks for listening.");
+        }
+    </script>
+</body>
+
+</html>

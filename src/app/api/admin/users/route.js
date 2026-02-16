@@ -37,9 +37,9 @@ export async function GET(request) {
                     role: true,
                     createdAt: true,
                     emailVerified: true,
-                    _count: { select: { links: true } },
                     views: true,
-                    avatar: true
+                    avatar: true,
+                    isPremium: true
                 }
             }),
             prisma.user.count()
